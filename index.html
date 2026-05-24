@@ -108,12 +108,13 @@ h1 {
 /* ── Outer layout ── */
 .map-wrap {
   display: flex;
-  gap: 12px;
+  flex-direction: column;
+  gap: 20px;
   width: 100%;
   max-width: 1300px;
   margin: 0 auto;
 }
-.side { flex: 1; min-width: 0; }
+.side { width: 100%; }
 
 /* ── Grid: 1 label col + 4 rack cols ── */
 .grid {
@@ -173,21 +174,21 @@ h1 {
 }
 .cell.open:hover { border-color: #7FFF00; box-shadow: 0 0 14px rgba(127,255,0,0.65); }
 
-/* Partial — neon orange */
+/* Partial — neon orange solid fill */
 .cell.partial {
-  background: #221000;
+  background: #ff6a00;
   border-color: #ff6a00;
-  box-shadow: 0 0 7px rgba(255,106,0,0.45), inset 0 0 10px rgba(255,106,0,0.08);
+  box-shadow: 0 0 10px rgba(255,106,0,0.6);
 }
-.cell.partial:hover { border-color: #ff8c2a; box-shadow: 0 0 14px rgba(255,106,0,0.7); }
+.cell.partial:hover { background: #ff8c2a; border-color: #ff8c2a; box-shadow: 0 0 16px rgba(255,106,0,0.85); }
 
-/* Full — neon red */
+/* Full — neon red solid fill */
 .cell.full {
-  background: #220000;
+  background: #ff1a1a;
   border-color: #ff1a1a;
-  box-shadow: 0 0 7px rgba(255,26,26,0.5), inset 0 0 10px rgba(255,26,26,0.09);
+  box-shadow: 0 0 10px rgba(255,26,26,0.65);
 }
-.cell.full:hover { border-color: #ff4d4d; box-shadow: 0 0 14px rgba(255,26,26,0.75); }
+.cell.full:hover { background: #ff4d4d; border-color: #ff4d4d; box-shadow: 0 0 16px rgba(255,26,26,0.9); }
 
 /* Harvesting border accent */
 .cell.harvesting { border-color: #1a8aff; box-shadow: 0 0 7px rgba(26,138,255,0.45); }
@@ -202,6 +203,8 @@ h1 {
   min-width: 0;
   color: #dde3e8;
 }
+.cell.partial .cname,
+.cell.full .cname { color: #000; }
 .cell.open { justify-content: center; }
 .cell.open .cname { color: #ffffff; font-weight: 900; font-style: normal; font-size: 0.72em; text-align: center; flex: unset; }
 
@@ -369,8 +372,7 @@ h1 {
     <div class="side">
       <div class="grid" id="left-grid"></div>
     </div>
-    <div style="width:10px; flex-shrink:0;"></div>
-    <div class="side">
+<div class="side">
       <div class="grid" id="right-grid"></div>
     </div>
   </div>
@@ -488,7 +490,6 @@ function renderGrid(id, racks, map) {
           onclick="openModal('${esc(info.batchId)}','${esc(key)}')"
           title="Harvest: ${esc(harvestDateStr)}">
           <span class="cname">${esc(fullName)}</span>
-          <span class="ctray">${tray}</span>
         </div>`;
       } else {
         html += `<div class="cell open" title="Open — Rack ${r} Level ${lv}">
