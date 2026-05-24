@@ -448,7 +448,7 @@ function fmtDate(d) {
 function buildMap(batches, farm) {
   const map = {};
   for (const b of batches) {
-    const assigns = parseAssigns(b._rack_assignment || '', farm);
+    const assigns = parseAssigns(b.rack || b._rack_assignment || '', farm);
     for (const a of assigns) {
       const key = `${a.rack}-${a.level}`;
       if (!map[key]) {
@@ -528,7 +528,7 @@ function switchFarm(farm) {
   document.getElementById(`tab-${farm}`).classList.add('active');
 
   const pattern = new RegExp(`^${farm}-\\d+[A-G]\\(`);
-  const farmBatches = allBatchCache.filter(b => pattern.test(b._rack_assignment || ''));
+  const farmBatches = allBatchCache.filter(b => pattern.test(b.rack || b._rack_assignment || ''));
   farmMap = buildMap(farmBatches, farm);
   renderStats(farmMap);
   renderGrid('left-grid',  RACKS_LEFT,  farmMap);
@@ -556,7 +556,7 @@ async function reload() {
         body: JSON.stringify({
           Action: 'Find',
           Properties: {
-            Selector: 'Filter(batch, AND([variety].[reserve_1]="Microgreen", IN([status], LIST("17B8E678","88EC564B","8FD7219A")), [_rack_assignment]<>***))'
+            Selector: 'Filter(batch, AND([variety].[reserve_1]="Microgreen", IN([status], LIST("17B8E678","88EC564B","8FD7219A")), NOT(ISBLANK([_rack_assignment]))))'
           },
           Rows: []
         })
@@ -621,7 +621,7 @@ function openModal(batchId, cellKey) {
 
   // Key fields
   const fields = [
-    ['Rack',           batch._rack_assignment || '—'],
+    ['Rack',           batch.rack || batch._rack_assignment || '—'],
     ['Harvest Date',   fmtDate(batch.optimal_harvest_date)],
     ['Days Remaining', daysLeft(batch.optimal_harvest_date)],
     ['Expected Yield', yieldVal],
