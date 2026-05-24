@@ -161,14 +161,103 @@ h1 {
 .variety-select:hover { border-color: #3a4a50; background-color: #1a2228; }
 .variety-select.active-filter { border-color: var(--lime); background-color: #0d1a00; color: var(--lime); }
 
+/* ── Main 75/25 layout ── */
+.main-layout {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  width: 100%;
+}
+.map-panel {
+  flex: 0 0 75%;
+  min-width: 0;
+}
+.harvest-panel {
+  flex: 0 0 calc(25% - 16px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 12px;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: sticky;
+  top: 16px;
+}
+.harvest-panel-title {
+  font-size: 0.78em;
+  font-weight: 800;
+  color: var(--lime);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.harvest-date-group { margin-bottom: 14px; }
+.harvest-date-btn {
+  width: 100%;
+  text-align: left;
+  background: #1a2228;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 10px;
+  color: var(--text);
+  font-size: 0.78em;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.15s;
+  margin-bottom: 4px;
+}
+.harvest-date-btn:hover { border-color: var(--lime); background: #0d1a00; }
+.harvest-date-btn.active { border-color: var(--lime); background: #0d1a00; color: var(--lime); }
+.harvest-date-btn .hd-count {
+  background: #2a3540;
+  border-radius: 10px;
+  padding: 1px 7px;
+  font-size: 0.82em;
+  color: var(--muted);
+}
+.harvest-date-btn.active .hd-count { background: #1a3300; color: var(--lime); }
+.harvest-batch-item {
+  padding: 5px 10px;
+  font-size: 0.72em;
+  color: var(--muted);
+  border-left: 2px solid var(--border);
+  margin-left: 6px;
+  margin-bottom: 3px;
+  line-height: 1.4;
+}
+.harvest-batch-item strong { color: var(--text); display: block; }
+.harvest-none { font-size: 0.75em; color: var(--muted); font-style: italic; padding: 8px 0; }
+
+/* ── Tray counter ── */
+#tray-counter {
+  max-width: 100%;
+  margin-bottom: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.tc-label { font-size: 0.75em; color: var(--muted); font-weight: 600; white-space: nowrap; }
+.tc-bar-wrap { flex: 1; background: #1a2228; border-radius: 20px; height: 10px; overflow: hidden; }
+.tc-bar { height: 100%; border-radius: 20px; background: var(--lime); transition: width 0.4s; box-shadow: 0 0 8px rgba(127,255,0,0.5); }
+.tc-pct { font-size: 0.82em; font-weight: 900; color: var(--lime); white-space: nowrap; }
+.tc-count { font-size: 0.72em; color: var(--muted); white-space: nowrap; }
+
+/* ── Highlighted batch cells ── */
+.cell.harvest-highlight { box-shadow: 0 0 0 2px var(--lime), 0 0 12px rgba(127,255,0,0.5) !important; }
+
 /* ── Outer layout ── */
 .map-wrap {
   display: flex;
   flex-direction: column;
   gap: 20px;
   width: 100%;
-  max-width: 1300px;
-  margin: 0 auto;
 }
 .side { width: 100%; }
 
@@ -205,80 +294,58 @@ h1 {
 
 /* ── Cells ── */
 .cell {
-  height: 32px;               /* shelf height */
+  min-height: 50px;
   border-radius: 4px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 6px;
+  justify-content: center;
+  padding: 5px 4px 4px;
   cursor: pointer;
-  border: 1px solid transparent;
+  border: 1px solid var(--border);
+  background: var(--surface);
   transition: filter 0.1s, transform 0.1s;
   overflow: hidden;
   position: relative;
   user-select: none;
+  gap: 4px;
 }
-.cell:hover { filter: brightness(1.25); transform: scaleY(1.12); z-index: 5; }
-.cell:active { filter: brightness(0.9); }
+.cell:hover { filter: brightness(1.3); transform: scaleY(1.06); z-index: 5; }
+.cell:active { filter: brightness(0.85); }
 
-/* Open — solid neon lime green fill */
-.cell.open {
-  background: #39ff14;
-  border-color: #39ff14;
-  box-shadow: 0 0 10px rgba(57,255,20,0.5);
-}
-.cell.open:hover { background: #7FFF00; border-color: #7FFF00; box-shadow: 0 0 16px rgba(127,255,0,0.75); }
-
-/* Partial — neon orange solid fill */
-.cell.partial {
-  background: #ff6a00;
-  border-color: #ff6a00;
-  box-shadow: 0 0 10px rgba(255,106,0,0.6);
-}
-.cell.partial:hover { background: #ff8c2a; border-color: #ff8c2a; box-shadow: 0 0 16px rgba(255,106,0,0.85); }
-
-/* Full — neon red solid fill */
-.cell.full {
-  background: #ff1a1a;
-  border-color: #ff1a1a;
-  box-shadow: 0 0 10px rgba(255,26,26,0.65);
-}
-.cell.full:hover { background: #ff4d4d; border-color: #ff4d4d; box-shadow: 0 0 16px rgba(255,26,26,0.9); }
-
-/* Harvesting border accent */
-.cell.harvesting { border-color: #1a8aff; box-shadow: 0 0 7px rgba(26,138,255,0.45); }
-
-.cname {
-  font-size: 0.62em;
-  font-weight: 700;
+/* Variety label */
+.cell-variety {
+  font-size: 0.6em;
+  font-weight: 800;
+  color: #fff;
+  text-align: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  flex: 1;
-  min-width: 0;
-  color: #dde3e8;
-}
-.cell.partial .cname,
-.cell.full .cname {
-  color: #fff;
-  font-weight: 900;
-  font-size: 1em;
-  text-align: center;
   width: 100%;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  line-height: 1.1;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.7);
 }
-.cell.open { justify-content: center; }
-.cell.open .cname { color: #ffffff; font-weight: 900; font-style: normal; font-size: 0.72em; text-align: center; flex: unset; }
 
-.ctray {
-  font-size: 0.56em;
-  color: rgba(255,255,255,0.45);
-  flex-shrink: 0;
-  margin-left: 4px;
-  font-variant-numeric: tabular-nums;
+/* Tray slot row */
+.tray-row {
+  display: flex;
+  gap: 2px;
+  width: 100%;
 }
-.cell.open .ctray { display: none; }
+.tray-slot {
+  flex: 1;
+  height: 13px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.tray-slot.ts-open {
+  background: #39ff14;
+  box-shadow: 0 0 4px rgba(57,255,20,0.5);
+}
+.tray-slot.ts-full {
+  box-shadow: 0 0 5px rgba(255,26,26,0.6);
+}
 
 /* ── Bottom controls ── */
 .controls {
@@ -454,18 +521,29 @@ h1 {
 <!-- Loading -->
 <div id="loading-area" class="loading"><span class="pulse">⏳ Fetching live AppSheet data…</span></div>
 
-<!-- Main map -->
+<!-- Tray counter -->
+<div id="tray-counter" style="display:none"></div>
+
+<!-- Main layout: map (75%) + harvest list (25%) -->
 <div id="content" style="display:none">
-  <div class="map-wrap">
-    <div class="side">
-      <div class="grid" id="left-grid"></div>
+  <div class="main-layout">
+    <!-- Left: map -->
+    <div class="map-panel">
+      <div class="map-wrap">
+        <div class="side">
+          <div class="grid" id="left-grid"></div>
+        </div>
+        <div class="side">
+          <div class="grid" id="right-grid"></div>
+        </div>
+      </div>
     </div>
-<div class="side">
-      <div class="grid" id="right-grid"></div>
+    <!-- Right: harvest list -->
+    <div class="harvest-panel">
+      <div class="harvest-panel-title">🗓 Upcoming Harvests</div>
+      <div id="harvest-list"></div>
     </div>
   </div>
-
-
 </div>
 
 <div id="err-area"></div>
@@ -512,11 +590,15 @@ const TASK_TYPE_MAP = {
 /* ── Resolve executor display name ── */
 function resolveExecutor(executedBy, modifiedBy) {
   if (!executedBy) return '—';
-  // If it looks like a plain readable name (no pure hex pattern), show it cleaned up
+  // 1. Try direct staff ID lookup
+  if (staffById[executedBy]) return staffById[executedBy];
+  // 2. Try modified_by email lookup in staff
+  if (modifiedBy && staffByEmail[modifiedBy]) return staffByEmail[modifiedBy];
+  // 3. Plain readable name (not a hex ID)
   if (!/^[0-9a-f]{8}$/i.test(executedBy)) {
     return executedBy.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   }
-  // It's an ID — fall back to email username from modifiedBy
+  // 4. Fall back to email username
   if (modifiedBy && modifiedBy.includes('@')) {
     const username = modifiedBy.split('@')[0];
     return username.replace(/[._-]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
@@ -530,10 +612,19 @@ const RACKS_LEFT  = [1, 2, 3, 4];
 const RACKS_RIGHT = [8, 7, 6, 5];
 
 let currentFarm = 'M1';
-let allBatchCache = [];   // all fetched batch records
-let farmMap = {};         // current farm's occupancy map
-let currentFilter  = null; // 'open' | 'partial' | 'full' | null
-let currentVariety = null; // variety name string | null
+let allBatchCache = [];     // all fetched batch records
+let farmMap = {};           // current farm's occupancy map
+let currentFilter  = null;  // 'open' | 'partial' | 'full' | null
+let currentVariety = null;  // variety name string | null
+let currentHarvestDate = null; // 'MM/DD/YYYY' | null — harvest date highlight
+let staffById  = {};        // id → full_name
+let staffByEmail = {};      // email → full_name
+let farmBatchesCache = [];  // current farm's batches
+
+const TOTAL_CAPACITY = 448;
+
+// Colors for multi-batch cells (first batch = red, second = orange, etc.)
+const BATCH_COLORS = ['#ff1a1a', '#ff8c00', '#f0c000', '#a020f0', '#00bfff'];
 
 /* ── Parse "M1-3E(8)" tokens ── */
 function parseAssigns(rackStr, farm) {
@@ -571,14 +662,15 @@ function buildMap(batches, farm) {
     const assigns = parseAssigns(b._rack_assignment || b.rack || '', farm);
     for (const a of assigns) {
       const key = `${a.rack}-${a.level}`;
-      if (!map[key]) {
-        map[key] = { variety: extractVariety(b.name), trays: 0, batchId: b.id, batch: b };
+      if (!map[key]) map[key] = { slots: [], totalTrays: 0 };
+      // Add or accumulate trays for this batch on this cell
+      const existing = map[key].slots.find(s => s.batchId === b.id);
+      if (existing) {
+        existing.trays += a.trays;
       } else {
-        map[key].trays += a.trays;
-        if (map[key].batch.id !== b.id) map[key].variety = 'Multi-Batch';
-        continue;
+        map[key].slots.push({ variety: extractVariety(b.name), trays: a.trays, batchId: b.id, batch: b });
       }
-      map[key].trays += a.trays;
+      map[key].totalTrays += a.trays;
     }
   }
   return map;
@@ -595,22 +687,44 @@ function renderGrid(id, racks, map) {
     for (const r of racks) {
       const key = `${r}-${lv}`;
       const info = map[key];
-      if (info && info.trays > 0) {
-        const fill = info.trays >= MAX_TRAYS ? 'full' : 'partial';
-        const harv = (info.batch.status_name || '').toLowerCase().includes('harvest') ? ' harvesting' : '';
-        const harvestDateStr = info.batch ? fmtDate(info.batch.optimal_harvest_date) : '—';
-        const fullName = info.batch ? (info.batch.name || info.variety) : info.variety;
-        const typeMismatch    = currentFilter  && currentFilter  !== fill;
-        const varietyMismatch = currentVariety && info.variety   !== currentVariety;
-        const dimmed = (typeMismatch || varietyMismatch) ? ' dimmed' : '';
-        html += `<div class="cell ${fill}${harv}${dimmed}"
-          onclick="openModal('${esc(info.batchId)}','${esc(key)}')"
-          title="Harvest: ${esc(harvestDateStr)}">
-          <span class="cname">${esc(fullName)}</span>
+
+      if (info && info.totalTrays > 0) {
+        const fill = info.totalTrays >= MAX_TRAYS ? 'full' : 'partial';
+        const typeMismatch    = currentFilter  && currentFilter !== fill;
+        const varietyMismatch = currentVariety && !info.slots.some(s => s.variety === currentVariety);
+        const harvestMismatch = currentHarvestDate && !info.slots.some(s => s.batch && s.batch.optimal_harvest_date === currentHarvestDate);
+        const dimmed = (typeMismatch || varietyMismatch || harvestMismatch) ? ' dimmed' : '';
+        const highlighted = currentHarvestDate && !harvestMismatch ? ' harvest-highlight' : '';
+        const labelText = info.slots.length > 1 ? 'Multi-Batch' : info.slots[0].variety;
+        const batchId = info.slots[0].batchId;
+        const harvestDateStr = info.slots[0].batch ? fmtDate(info.slots[0].batch.optimal_harvest_date) : '—';
+
+        // Build tray slots
+        let slotsHtml = '';
+        let slotsFilled = 0;
+        for (let si = 0; si < info.slots.length && slotsFilled < MAX_TRAYS; si++) {
+          const color = BATCH_COLORS[si % BATCH_COLORS.length];
+          const count = Math.min(info.slots[si].trays, MAX_TRAYS - slotsFilled);
+          for (let t = 0; t < count; t++) {
+            slotsHtml += `<div class="tray-slot ts-full" style="background:${color}"></div>`;
+          }
+          slotsFilled += count;
+        }
+        for (let i = slotsFilled; i < MAX_TRAYS; i++) {
+          slotsHtml += `<div class="tray-slot ts-open"></div>`;
+        }
+
+        html += `<div class="cell${dimmed}${highlighted}" onclick="openModal('${esc(batchId)}','${esc(key)}')" title="Harvest: ${esc(harvestDateStr)}">
+          <div class="cell-variety">${esc(labelText)}</div>
+          <div class="tray-row">${slotsHtml}</div>
         </div>`;
       } else {
-        const dimmed = (currentFilter && currentFilter !== 'open') || currentVariety ? ' dimmed' : '';
-        html += `<div class="cell open${dimmed}" title="Open — Rack ${r} Level ${lv}"></div>`;
+        const dimmed = (currentFilter && currentFilter !== 'open') || currentVariety || currentHarvestDate ? ' dimmed' : '';
+        let slotsHtml = '';
+        for (let i = 0; i < MAX_TRAYS; i++) slotsHtml += `<div class="tray-slot ts-open"></div>`;
+        html += `<div class="cell${dimmed}" title="Open — Rack ${r} Level ${lv}" style="cursor:default">
+          <div class="tray-row">${slotsHtml}</div>
+        </div>`;
       }
     }
   }
@@ -629,6 +743,83 @@ function setFilter(type) {
   renderGrid('right-grid', RACKS_RIGHT, farmMap);
 }
 
+/* ── Harvest date highlight toggle ── */
+function setHarvestDate(dateStr) {
+  currentHarvestDate = currentHarvestDate === dateStr ? null : dateStr;
+  renderHarvestList(farmBatchesCache);
+  renderGrid('left-grid',  RACKS_LEFT,  farmMap);
+  renderGrid('right-grid', RACKS_RIGHT, farmMap);
+}
+
+/* ── Tray counter ── */
+function renderTrayCounter(batches) {
+  const el = document.getElementById('tray-counter');
+  if (!el) return;
+  const total = batches.reduce((sum, b) => sum + (parseFloat(b.number_of_trays) || 0), 0);
+  const pct = Math.min(100, Math.round((total / TOTAL_CAPACITY) * 100));
+  const barColor = pct >= 90 ? '#ff1a1a' : pct >= 70 ? '#ff8c00' : 'var(--lime)';
+  el.style.display = 'flex';
+  el.innerHTML = `
+    <span class="tc-label">Container Capacity</span>
+    <div class="tc-bar-wrap"><div class="tc-bar" style="width:${pct}%;background:${barColor}"></div></div>
+    <span class="tc-pct">${pct}%</span>
+    <span class="tc-count">${total} / ${TOTAL_CAPACITY} trays</span>`;
+}
+
+/* ── Harvest list (next 7 days) ── */
+function renderHarvestList(batches) {
+  const el = document.getElementById('harvest-list');
+  if (!el) return;
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const cutoff = new Date(today); cutoff.setDate(cutoff.getDate() + 7);
+
+  // Group batches by harvest date within next 7 days
+  const groups = {};
+  for (const b of batches) {
+    const d = b.optimal_harvest_date;
+    if (!d) continue;
+    const p = d.split('/');
+    if (p.length < 3) continue;
+    const dt = new Date(+p[2], +p[0]-1, +p[1]);
+    if (dt < today || dt > cutoff) continue;
+    if (!groups[d]) groups[d] = [];
+    groups[d].push(b);
+  }
+
+  const sortedDates = Object.keys(groups).sort((a,b) => {
+    const pa = a.split('/'), pb = b.split('/');
+    return new Date(+pa[2],+pa[0]-1,+pa[1]) - new Date(+pb[2],+pb[0]-1,+pb[1]);
+  });
+
+  if (!sortedDates.length) {
+    el.innerHTML = '<div class="harvest-none">No harvests in the next 7 days.</div>';
+    return;
+  }
+
+  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  el.innerHTML = sortedDates.map(dateStr => {
+    const p = dateStr.split('/');
+    const dt = new Date(+p[2], +p[0]-1, +p[1]);
+    const diffDays = Math.round((dt - today) / 86400000);
+    const dayLabel = diffDays === 0 ? 'Today' : diffDays === 1 ? 'Tomorrow' : dayNames[dt.getDay()];
+    const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const dateLabel = `${dayLabel} · ${mo[+p[0]-1]} ${+p[1]}`;
+    const isActive = currentHarvestDate === dateStr;
+    const batchList = groups[dateStr].map(b =>
+      `<div class="harvest-batch-item"><strong>${esc(extractVariety(b.name))}</strong>${esc(b._rack_assignment || '—')}</div>`
+    ).join('');
+    return `
+      <div class="harvest-date-group">
+        <button class="harvest-date-btn${isActive ? ' active' : ''}" onclick="setHarvestDate('${esc(dateStr)}')">
+          <span>${esc(dateLabel)}</span>
+          <span class="hd-count">${groups[dateStr].length}</span>
+        </button>
+        ${batchList}
+      </div>`;
+  }).join('');
+}
+
 function setVariety(val) {
   currentVariety = val || null;
   const sel = document.getElementById('variety-select');
@@ -643,8 +834,8 @@ function renderStats(map) {
   for (const r of [...RACKS_LEFT,...RACKS_RIGHT]) {
     for (const lv of LEVELS) {
       const info = map[`${r}-${lv}`];
-      if (!info||info.trays===0) open++;
-      else if (info.trays>=MAX_TRAYS) full++;
+      if (!info||info.totalTrays===0) open++;
+      else if (info.totalTrays>=MAX_TRAYS) full++;
       else part++;
     }
   }
@@ -655,8 +846,8 @@ function renderStats(map) {
   // Build sorted unique variety list from occupied cells
   const varieties = [...new Set(
     Object.values(map)
-      .filter(info => info.trays > 0)
-      .map(info => info.variety)
+      .filter(info => info.totalTrays > 0)
+      .flatMap(info => info.slots.map(s => s.variety))
   )].sort();
   const varOptions = varieties.map(v =>
     `<option value="${esc(v)}"${currentVariety === v ? ' selected' : ''}>${esc(v)}</option>`
@@ -679,13 +870,16 @@ function switchFarm(farm) {
   currentFarm = farm;
   currentVariety = null;
   currentFilter  = null;
+  currentHarvestDate = null;
   document.querySelectorAll('.farm-tab').forEach(t => t.classList.remove('active'));
   document.getElementById(`tab-${farm}`).classList.add('active');
 
   const pattern = new RegExp(`^${farm}-\\d+[A-G]\\(`);
-  const farmBatches = allBatchCache.filter(b => pattern.test(b._rack_assignment || b.rack || ''));
-  farmMap = buildMap(farmBatches, farm);
+  farmBatchesCache = allBatchCache.filter(b => pattern.test(b._rack_assignment || b.rack || ''));
+  farmMap = buildMap(farmBatchesCache, farm);
   renderStats(farmMap);
+  renderTrayCounter(farmBatchesCache);
+  renderHarvestList(farmBatchesCache);
   renderGrid('left-grid',  RACKS_LEFT,  farmMap);
   renderGrid('right-grid', RACKS_RIGHT, farmMap);
 
@@ -702,23 +896,38 @@ async function reload() {
   document.getElementById('err-area').innerHTML = '';
 
   try {
-    const resp = await fetch(
-      `https://api.appsheet.com/api/v2/apps/${APP_ID}/tables/batch/Action`,
-      {
+    // Fetch batches and staff in parallel
+    const [batchResp, staffResp] = await Promise.all([
+      fetch(`https://api.appsheet.com/api/v2/apps/${APP_ID}/tables/batch/Action`, {
         method: 'POST',
         headers: { 'ApplicationAccessKey': API_KEY, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           Action: 'Find',
-          Properties: {
-            Selector: 'Filter(batch, AND([variety].[reserve_1]="Microgreen", IN([status], LIST("17B8E678")), NOT(ISBLANK([_rack_assignment]))))'
-          },
+          Properties: { Selector: 'Filter(batch, AND([variety].[reserve_1]="Microgreen", IN([status], LIST("17B8E678")), NOT(ISBLANK([_rack_assignment]))))' },
           Rows: []
         })
-      }
-    );
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const txt = await resp.text();
+      }),
+      fetch(`https://api.appsheet.com/api/v2/apps/${APP_ID}/tables/staff/Action`, {
+        method: 'POST',
+        headers: { 'ApplicationAccessKey': API_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ Action: 'Find', Properties: { Selector: 'Filter(staff, TRUE)' }, Rows: [] })
+      })
+    ]);
+
+    if (!batchResp.ok) throw new Error(`HTTP ${batchResp.status}`);
+    const txt = await batchResp.text();
     allBatchCache = txt.trim() ? JSON.parse(txt) : [];
+
+    // Build staff lookup maps
+    try {
+      const staffTxt = await staffResp.text();
+      const staffData = staffTxt.trim() ? JSON.parse(staffTxt) : [];
+      staffById = {}; staffByEmail = {};
+      for (const s of staffData) {
+        if (s.id && s.full_name)  staffById[s.id]      = s.full_name;
+        if (s.email && s.full_name) staffByEmail[s.email] = s.full_name;
+      }
+    } catch(e) { /* staff lookup optional */ }
 
     document.getElementById('loading-area').style.display = 'none';
     document.getElementById('content').style.display = 'block';
@@ -772,9 +981,12 @@ function openModal(batchId, cellKey) {
     return `${diff} days`;
   }
 
-  // Expected yield — use dedicated field if available, else trays
-  const yieldVal = batch.expected_yield || batch.yield_oz || batch.total_oz ||
-    (batch.number_of_trays ? `${batch.number_of_trays} trays` : '—');
+  // Expected yield = avg yield per tray × number of trays
+  const avgYield  = parseFloat(batch.expected_avg_yield_per_tray);
+  const numTrays  = parseFloat(batch.number_of_trays);
+  const yieldVal  = (!isNaN(avgYield) && !isNaN(numTrays))
+    ? `${(avgYield * numTrays).toFixed(1)} oz`
+    : (batch.expected_yield || batch.yield_oz || batch.total_oz || '—');
 
   // Key fields
   const fields = [
