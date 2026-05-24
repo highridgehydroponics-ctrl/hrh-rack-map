@@ -451,7 +451,7 @@ function fmtDate(d) {
 function buildMap(batches, farm) {
   const map = {};
   for (const b of batches) {
-    const assigns = parseAssigns(b.rack || '', farm);
+    const assigns = parseAssigns(b.rack || b._rack_assignment || '', farm);
     for (const a of assigns) {
       const key = `${a.rack}-${a.level}`;
       if (!map[key]) {
@@ -505,7 +505,7 @@ function esc(s) {
 }
 
 /* ── Stats ── */
-function renderStats(map, activeBatchCount) {
+function renderStats(map) {
   let open=0, part=0, full=0;
   for (const r of [...RACKS_LEFT,...RACKS_RIGHT]) {
     for (const lv of LEVELS) {
@@ -519,7 +519,7 @@ function renderStats(map, activeBatchCount) {
     <div class="stat"><div class="sdot d-open"></div><strong>${open}</strong>&nbsp;Open</div>
     <div class="stat"><div class="sdot d-partial"></div><strong>${part}</strong>&nbsp;Partial</div>
     <div class="stat"><div class="sdot d-full"></div><strong>${full}</strong>&nbsp;Full</div>
-    <div class="stat">📦 ${activeBatchCount} Active Batches</div>
+    <div class="stat">📦 ${allBatchCache.filter(b=>/^${currentFarm}-\d+[A-G]\(/.test(b.rack||b._rack_assignment||'')).length} Active Batches</div>
   `;
 }
 
@@ -530,14 +530,9 @@ function switchFarm(farm) {
   document.getElementById(`tab-${farm}`).classList.add('active');
 
   const pattern = new RegExp(`^${farm}-\\d+[A-G]\\(`);
-  const farmBatches = allBatchCache.filter(b => {
-    const rack = b.rack || '';
-    // AppSheet selector already ensures status = Growing Under Lights.
-    // Client-side: just guard against *** and confirm rack matches this farm.
-    return rack !== '***' && pattern.test(rack);
-  });
+  const farmBatches = allBatchCache.filter(b => pattern.test(b.rack || b._rack_assignment || ''));
   farmMap = buildMap(farmBatches, farm);
-  renderStats(farmMap, farmBatches.length);
+  renderStats(farmMap);
   renderGrid('left-grid',  RACKS_LEFT,  farmMap);
   renderGrid('right-grid', RACKS_RIGHT, farmMap);
 
@@ -563,7 +558,7 @@ async function reload() {
         body: JSON.stringify({
           Action: 'Find',
           Properties: {
-            Selector: 'Filter(batch, AND([variety].[reserve_1]="Microgreen", IN([status], LIST("17B8E678")), NOT(ISBLANK([rack]))))'
+            Selector: 'Filter(batch, AND([variety].[reserve_1]="Microgreen", IN([status], LIST("17B8E678","88EC564B","8FD7219A")), NOT(ISBLANK([_rack_assignment]))))'
           },
           Rows: []
         })
