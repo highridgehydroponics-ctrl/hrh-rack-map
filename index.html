@@ -280,13 +280,12 @@ h1 {
 .modal-close:hover { color: var(--text); background: #1e2a30; }
 
 .modal-variety {
-  font-size: 1.25em; font-weight: 800;
-  color: var(--lime); margin-bottom: 4px; padding-right: 28px;
+  font-size: 1.1em; font-weight: 800;
+  color: var(--text); margin-bottom: 10px;
+  text-align: center; padding-right: 28px;
+  line-height: 1.3;
 }
-.modal-batch {
-  font-size: 0.72em; color: var(--muted);
-  margin-bottom: 16px; font-family: monospace;
-}
+.modal-batch { display: none; }
 .modal-grid {
   display: grid; grid-template-columns: 1fr 1fr;
   gap: 10px; margin-bottom: 18px;
@@ -585,8 +584,8 @@ function openModal(batchId, cellKey) {
   const batch = allBatchCache.find(b => b.id === batchId);
   if (!batch) return;
 
-  document.getElementById('m-variety').textContent = extractVariety(batch.name);
-  document.getElementById('m-batch').textContent   = batch.name || batchId;
+  document.getElementById('m-variety').textContent = batch.name || batchId;
+  document.getElementById('m-batch').textContent   = '';
 
   // Status badge
   const sn = batch.status_name || '';
@@ -597,18 +596,39 @@ function openModal(batchId, cellKey) {
   document.getElementById('m-status-badge').innerHTML =
     `<span class="status-badge ${sCls}">${sn||'Unknown'}</span>`;
 
+  // Days remaining until harvest
+  function daysLeft(dateStr) {
+    if (!dateStr) return '—';
+    const p = dateStr.split('/');
+    if (p.length < 3) return '—';
+    const harvest = new Date(+p[2], +p[0]-1, +p[1]);
+    const today = new Date(); today.setHours(0,0,0,0);
+    const diff = Math.round((harvest - today) / 86400000);
+    if (diff < 0)  return `${Math.abs(diff)}d overdue`;
+    if (diff === 0) return 'Today!';
+    return `${diff} days`;
+  }
+
+  // Expected yield — use dedicated field if available, else trays
+  const yieldVal = batch.expected_yield || batch.yield_oz || batch.total_oz ||
+    (batch.number_of_trays ? `${batch.number_of_trays} trays` : '—');
+
   // Key fields
   const fields = [
-    ['Rack', batch.rack || '—'],
-    ['Trays', batch.number_of_trays || '—'],
-    ['Harvest Date',  fmtDate(batch.optimal_harvest_date)],
-    ['Planted Date',  fmtDate(batch.actual_planting_date || batch.optimal_planting_date)],
-    ['Lights Date',   fmtDate(batch.actual_pul_date || batch.optimal_pul_date)],
-    ['Variety ID',    batch.variety || '—'],
+    ['Rack',           batch.rack || '—'],
+    ['Harvest Date',   fmtDate(batch.optimal_harvest_date)],
+    ['Days Remaining', daysLeft(batch.optimal_harvest_date)],
+    ['Expected Yield', yieldVal],
   ];
-  document.getElementById('m-fields').innerHTML = fields.map(([l,v]) =>
-    `<div class="mfield"><div class="mfield-label">${l}</div><div class="mfield-val">${esc(v)}</div></div>`
-  ).join('');
+  document.getElementById('m-fields').innerHTML = fields.map(([l,v]) => {
+    let valColor = '';
+    if (l === 'Days Remaining') {
+      if (String(v).includes('overdue') || v === 'Today!')   valColor = 'style="color:var(--red)"';
+      else if (parseInt(v) <= 3)  valColor = 'style="color:var(--orange)"';
+      else                        valColor = 'style="color:var(--lime)"';
+    }
+    return `<div class="mfield"><div class="mfield-label">${l}</div><div class="mfield-val" ${valColor}>${esc(String(v))}</div></div>`;
+  }).join('');
 
   // Show modal immediately, then load tasks async
   document.getElementById('modal-overlay').style.display = 'flex';
