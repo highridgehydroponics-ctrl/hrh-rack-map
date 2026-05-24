@@ -451,7 +451,7 @@ function fmtDate(d) {
 function buildMap(batches, farm) {
   const map = {};
   for (const b of batches) {
-    const assigns = parseAssigns(b.rack || b._rack_assignment || '', farm);
+    const assigns = parseAssigns(b.rack || '', farm);
     for (const a of assigns) {
       const key = `${a.rack}-${a.level}`;
       if (!map[key]) {
@@ -531,7 +531,7 @@ function switchFarm(farm) {
 
   const pattern = new RegExp(`^${farm}-\\d+[A-G]\\(`);
   const farmBatches = allBatchCache.filter(b => {
-    const rack = b.rack || b._rack_assignment || '';
+    const rack = b.rack || '';
     // AppSheet selector already ensures status = Growing Under Lights.
     // Client-side: just guard against *** and confirm rack matches this farm.
     return rack !== '***' && pattern.test(rack);
@@ -563,7 +563,7 @@ async function reload() {
         body: JSON.stringify({
           Action: 'Find',
           Properties: {
-            Selector: 'Filter(batch, AND([variety].[reserve_1]="Microgreen", IN([status], LIST("17B8E678")), NOT(ISBLANK([_rack_assignment]))))'
+            Selector: 'Filter(batch, AND([variety].[reserve_1]="Microgreen", [status_name]="Growing Under Lights", NOT(ISBLANK([rack]))))'
           },
           Rows: []
         })
