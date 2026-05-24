@@ -165,29 +165,32 @@ h1 {
 .cell:hover { filter: brightness(1.25); transform: scaleY(1.12); z-index: 5; }
 .cell:active { filter: brightness(0.9); }
 
-/* Open — lime green */
+/* Open — neon lime green */
 .cell.open {
-  background: #051200;
-  border-color: #2a5a00;
+  background: #071c00;
+  border-color: #39ff14;
+  box-shadow: 0 0 7px rgba(57,255,20,0.4), inset 0 0 10px rgba(57,255,20,0.07);
 }
-.cell.open:hover { border-color: var(--lime); }
+.cell.open:hover { border-color: #7FFF00; box-shadow: 0 0 14px rgba(127,255,0,0.65); }
 
-/* Partial — blaze orange */
+/* Partial — neon orange */
 .cell.partial {
-  background: #1c0900;
-  border-color: #7a3000;
+  background: #221000;
+  border-color: #ff6a00;
+  box-shadow: 0 0 7px rgba(255,106,0,0.45), inset 0 0 10px rgba(255,106,0,0.08);
 }
-.cell.partial:hover { border-color: var(--orange); }
+.cell.partial:hover { border-color: #ff8c2a; box-shadow: 0 0 14px rgba(255,106,0,0.7); }
 
-/* Full — bright red */
+/* Full — neon red */
 .cell.full {
-  background: #1c0000;
-  border-color: #7a0000;
+  background: #220000;
+  border-color: #ff1a1a;
+  box-shadow: 0 0 7px rgba(255,26,26,0.5), inset 0 0 10px rgba(255,26,26,0.09);
 }
-.cell.full:hover { border-color: var(--red); }
+.cell.full:hover { border-color: #ff4d4d; box-shadow: 0 0 14px rgba(255,26,26,0.75); }
 
 /* Harvesting border accent */
-.cell.harvesting { border-color: #1a6aff; }
+.cell.harvesting { border-color: #1a8aff; box-shadow: 0 0 7px rgba(26,138,255,0.45); }
 
 .cname {
   font-size: 0.62em;
@@ -373,10 +376,10 @@ h1 {
   </div>
 
   <div class="legend">
-    <div class="leg"><div class="lsw" style="background:#2a5a00;border:1px solid var(--lime)"></div>Open</div>
-    <div class="leg"><div class="lsw" style="background:#7a3000;border:1px solid var(--orange)"></div>Partial</div>
-    <div class="leg"><div class="lsw" style="background:#7a0000;border:1px solid var(--red)"></div>Full (8+ trays)</div>
-    <div class="leg"><div class="lsw" style="background:#0d1f3a;border:1px solid #1a6aff"></div>Being Harvested</div>
+    <div class="leg"><div class="lsw" style="background:#071c00;border:1px solid #39ff14;box-shadow:0 0 5px rgba(57,255,20,0.5)"></div>Open</div>
+    <div class="leg"><div class="lsw" style="background:#221000;border:1px solid #ff6a00;box-shadow:0 0 5px rgba(255,106,0,0.5)"></div>Partial</div>
+    <div class="leg"><div class="lsw" style="background:#220000;border:1px solid #ff1a1a;box-shadow:0 0 5px rgba(255,26,26,0.55)"></div>Full (8+ trays)</div>
+    <div class="leg"><div class="lsw" style="background:#0d1f3a;border:1px solid #1a8aff;box-shadow:0 0 5px rgba(26,138,255,0.5)"></div>Being Harvested</div>
   </div>
 
   <div class="controls">
@@ -528,11 +531,13 @@ function switchFarm(farm) {
 
   const pattern = new RegExp(`^${farm}-\\d+[A-G]\\(`);
   const farmBatches = allBatchCache.filter(b => {
-    const rack   = b.rack || b._rack_assignment || '';
-    const status = (b.status_name || '').toLowerCase();
-    return rack !== '***'
-        && pattern.test(rack)
-        && status.includes('growing under lights');
+    const rack     = b.rack || b._rack_assignment || '';
+    const statusNm = (b.status_name || '').toLowerCase();
+    const statusId = (b.status || '').toUpperCase();
+    // Must have a real rack assignment for this farm AND be "Growing Under Lights"
+    // Check both the human-readable name and the raw status ID (17B8E678) as fallback
+    const isGrowing = statusNm.includes('growing under lights') || statusId === '17B8E678';
+    return rack !== '***' && pattern.test(rack) && isGrowing;
   });
   farmMap = buildMap(farmBatches, farm);
   renderStats(farmMap, farmBatches.length);
