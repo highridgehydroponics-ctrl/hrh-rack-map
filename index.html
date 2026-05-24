@@ -43,12 +43,18 @@ h1 {
   margin-bottom: 16px;
 }
 
-/* ── Farm switcher ── */
+/* ── Top bar: farm switcher + refresh ── */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
 .farm-tabs {
   display: flex;
-  justify-content: center;
   gap: 10px;
-  margin-bottom: 18px;
 }
 .farm-tab {
   background: var(--surface);
@@ -81,6 +87,25 @@ h1 {
 }
 .farm-tab:not(.active) .tab-name { color: var(--muted); }
 
+/* ── Refresh button (top bar) ── */
+.refresh-wrap { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.btn-refresh {
+  background: #0d2200;
+  color: var(--lime);
+  border: 2px solid var(--lime);
+  padding: 10px 26px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 800;
+  letter-spacing: 1px;
+  transition: all 0.18s;
+  box-shadow: 0 0 8px rgba(127,255,0,0.3);
+}
+.btn-refresh:hover { background: #183300; box-shadow: 0 0 16px rgba(127,255,0,0.55); }
+.btn-refresh:disabled { opacity: 0.5; cursor: not-allowed; }
+.refresh-time { font-size: 0.65em; color: var(--muted); }
+
 /* ── Stats bar ── */
 .stats-bar {
   display: flex;
@@ -95,15 +120,46 @@ h1 {
   gap: 5px;
   background: var(--surface);
   border: 1px solid var(--border);
-  padding: 5px 12px;
+  padding: 6px 14px;
   border-radius: 20px;
-  font-size: 0.75em;
+  font-size: 0.82em;
+  cursor: pointer;
+  transition: all 0.18s;
+  user-select: none;
 }
+.stat:hover { border-color: #3a4a50; background: #1a2228; }
+.stat.active-filter { border-color: var(--lime); background: #0d1a00; }
+.stat.inactive-filter { opacity: 0.3; }
 .stat strong { color: var(--text); }
 .sdot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
 .d-open    { background: var(--lime); }
 .d-partial { background: var(--orange); }
 .d-full    { background: var(--red); }
+
+/* ── Dimmed cells (filter) ── */
+.cell.dimmed { opacity: 0.15; pointer-events: none; }
+
+/* ── Variety dropdown ── */
+.variety-select {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.82em;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.18s, background 0.18s;
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 28px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b7785'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+.variety-select:hover { border-color: #3a4a50; background-color: #1a2228; }
+.variety-select.active-filter { border-color: var(--lime); background-color: #0d1a00; color: var(--lime); }
 
 /* ── Outer layout ── */
 .map-wrap {
@@ -352,17 +408,22 @@ h1 {
 <body>
 
 <h1>🌿 HRH Facility Rack Map</h1>
-<div class="sub" id="sub-label">Loading…</div>
 
-<!-- Farm switcher -->
-<div class="farm-tabs">
-  <div class="farm-tab active" id="tab-M1" onclick="switchFarm('M1')">
-    <div class="tab-id">M1</div>
-    <div class="tab-name">Micro 1</div>
+<!-- Top bar: farm switcher + refresh -->
+<div class="top-bar">
+  <div class="farm-tabs">
+    <div class="farm-tab active" id="tab-M1" onclick="switchFarm('M1')">
+      <div class="tab-id">M1</div>
+      <div class="tab-name">Micro 1</div>
+    </div>
+    <div class="farm-tab" id="tab-M2" onclick="switchFarm('M2')">
+      <div class="tab-id">M2</div>
+      <div class="tab-name">Micro 2</div>
+    </div>
   </div>
-  <div class="farm-tab" id="tab-M2" onclick="switchFarm('M2')">
-    <div class="tab-id">M2</div>
-    <div class="tab-name">Micro 2</div>
+  <div class="refresh-wrap">
+    <button class="btn-refresh" id="refresh-btn" onclick="reload()">↻ Refresh</button>
+    <div class="refresh-time" id="refresh-time">—</div>
   </div>
 </div>
 
@@ -383,16 +444,7 @@ h1 {
     </div>
   </div>
 
-  <div class="legend">
-    <div class="leg"><div class="lsw" style="background:#071c00;border:1px solid #39ff14;box-shadow:0 0 5px rgba(57,255,20,0.5)"></div>Open</div>
-    <div class="leg"><div class="lsw" style="background:#221000;border:1px solid #ff6a00;box-shadow:0 0 5px rgba(255,106,0,0.5)"></div>Partial</div>
-    <div class="leg"><div class="lsw" style="background:#220000;border:1px solid #ff1a1a;box-shadow:0 0 5px rgba(255,26,26,0.55)"></div>Full (8+ trays)</div>
-    <div class="leg"><div class="lsw" style="background:#0d1f3a;border:1px solid #1a8aff;box-shadow:0 0 5px rgba(26,138,255,0.5)"></div>Being Harvested</div>
-  </div>
 
-  <div class="controls">
-    <button class="btn" id="refresh-btn" onclick="reload()">↻ Refresh</button>
-  </div>
 </div>
 
 <div id="err-area"></div>
@@ -425,6 +477,8 @@ const RACKS_RIGHT = [8, 7, 6, 5];
 let currentFarm = 'M1';
 let allBatchCache = [];   // all fetched batch records
 let farmMap = {};         // current farm's occupancy map
+let currentFilter  = null; // 'open' | 'partial' | 'full' | null
+let currentVariety = null; // variety name string | null
 
 /* ── Parse "M1-3E(8)" tokens ── */
 function parseAssigns(rackStr, farm) {
@@ -489,16 +543,19 @@ function renderGrid(id, racks, map) {
       if (info && info.trays > 0) {
         const fill = info.trays >= MAX_TRAYS ? 'full' : 'partial';
         const harv = (info.batch.status_name || '').toLowerCase().includes('harvest') ? ' harvesting' : '';
-        const tray = info.trays === 1 ? '1 tray' : `${info.trays} trays`;
         const harvestDateStr = info.batch ? fmtDate(info.batch.optimal_harvest_date) : '—';
         const fullName = info.batch ? (info.batch.name || info.variety) : info.variety;
-        html += `<div class="cell ${fill}${harv}"
+        const typeMismatch    = currentFilter  && currentFilter  !== fill;
+        const varietyMismatch = currentVariety && info.variety   !== currentVariety;
+        const dimmed = (typeMismatch || varietyMismatch) ? ' dimmed' : '';
+        html += `<div class="cell ${fill}${harv}${dimmed}"
           onclick="openModal('${esc(info.batchId)}','${esc(key)}')"
           title="Harvest: ${esc(harvestDateStr)}">
           <span class="cname">${esc(fullName)}</span>
         </div>`;
       } else {
-        html += `<div class="cell open" title="Open — Rack ${r} Level ${lv}">
+        const dimmed = (currentFilter && currentFilter !== 'open') || currentVariety ? ' dimmed' : '';
+        html += `<div class="cell open${dimmed}" title="Open — Rack ${r} Level ${lv}">
           <span class="cname">open</span>
         </div>`;
       }
@@ -509,6 +566,22 @@ function renderGrid(id, racks, map) {
 
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+/* ── Filter toggles ── */
+function setFilter(type) {
+  currentFilter = currentFilter === type ? null : type;
+  renderStats(farmMap);
+  renderGrid('left-grid',  RACKS_LEFT,  farmMap);
+  renderGrid('right-grid', RACKS_RIGHT, farmMap);
+}
+
+function setVariety(val) {
+  currentVariety = val || null;
+  const sel = document.getElementById('variety-select');
+  if (sel) sel.className = 'variety-select' + (currentVariety ? ' active-filter' : '');
+  renderGrid('left-grid',  RACKS_LEFT,  farmMap);
+  renderGrid('right-grid', RACKS_RIGHT, farmMap);
 }
 
 /* ── Stats ── */
@@ -522,17 +595,37 @@ function renderStats(map) {
       else part++;
     }
   }
+  const fOpen    = currentFilter === 'open'    ? 'active-filter' : currentFilter ? 'inactive-filter' : '';
+  const fPartial = currentFilter === 'partial' ? 'active-filter' : currentFilter ? 'inactive-filter' : '';
+  const fFull    = currentFilter === 'full'    ? 'active-filter' : currentFilter ? 'inactive-filter' : '';
+
+  // Build sorted unique variety list from occupied cells
+  const varieties = [...new Set(
+    Object.values(map)
+      .filter(info => info.trays > 0)
+      .map(info => info.variety)
+  )].sort();
+  const varOptions = varieties.map(v =>
+    `<option value="${esc(v)}"${currentVariety === v ? ' selected' : ''}>${esc(v)}</option>`
+  ).join('');
+  const varCls = currentVariety ? 'variety-select active-filter' : 'variety-select';
+
   document.getElementById('stats-bar').innerHTML = `
-    <div class="stat"><div class="sdot d-open"></div><strong>${open}</strong>&nbsp;Open</div>
-    <div class="stat"><div class="sdot d-partial"></div><strong>${part}</strong>&nbsp;Partial</div>
-    <div class="stat"><div class="sdot d-full"></div><strong>${full}</strong>&nbsp;Full</div>
-    <div class="stat">📦 ${allBatchCache.filter(b=>/^${currentFarm}-\d+[A-G]\(/.test(b.rack||b._rack_assignment||'')).length} Active Batches</div>
+    <div class="stat ${fOpen}"    onclick="setFilter('open')"><div class="sdot d-open"></div><strong>${open}</strong>&nbsp;Open</div>
+    <div class="stat ${fPartial}" onclick="setFilter('partial')"><div class="sdot d-partial"></div><strong>${part}</strong>&nbsp;Partial</div>
+    <div class="stat ${fFull}"    onclick="setFilter('full')"><div class="sdot d-full"></div><strong>${full}</strong>&nbsp;Full</div>
+    <select id="variety-select" class="${varCls}" onchange="setVariety(this.value)">
+      <option value="">All Varieties</option>
+      ${varOptions}
+    </select>
   `;
 }
 
 /* ── Switch farm ── */
 function switchFarm(farm) {
   currentFarm = farm;
+  currentVariety = null;
+  currentFilter  = null;
   document.querySelectorAll('.farm-tab').forEach(t => t.classList.remove('active'));
   document.getElementById(`tab-${farm}`).classList.add('active');
 
@@ -543,9 +636,8 @@ function switchFarm(farm) {
   renderGrid('left-grid',  RACKS_LEFT,  farmMap);
   renderGrid('right-grid', RACKS_RIGHT, farmMap);
 
-  const now = new Date();
   document.getElementById('sub-label').textContent =
-    `${farm === 'M1' ? 'Micro 1' : 'Micro 2'} · Last updated ${now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
+    farm === 'M1' ? 'Micro 1' : 'Micro 2';
 }
 
 /* ── Load data ── */
@@ -577,6 +669,9 @@ async function reload() {
 
     document.getElementById('loading-area').style.display = 'none';
     document.getElementById('content').style.display = 'block';
+    const now = new Date();
+    document.getElementById('refresh-time').textContent =
+      'Updated ' + now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
     switchFarm(currentFarm);
 
   } catch(err) {
@@ -630,7 +725,7 @@ function openModal(batchId, cellKey) {
 
   // Key fields
   const fields = [
-    ['Rack',           batch.rack || batch._rack_assignment || '—'],
+    ['Rack',           batch._rack_assignment || batch.rack || '—'],
     ['Harvest Date',   fmtDate(batch.optimal_harvest_date)],
     ['Days Remaining', daysLeft(batch.optimal_harvest_date)],
     ['Expected Yield', yieldVal],
