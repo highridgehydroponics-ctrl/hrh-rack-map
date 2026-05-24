@@ -563,7 +563,7 @@ async function reload() {
         body: JSON.stringify({
           Action: 'Find',
           Properties: {
-            Selector: 'Filter(batch, AND([variety].[reserve_1]="Microgreen", [status_name]="Growing Under Lights", NOT(ISBLANK([rack]))))'
+            Selector: 'Filter(batch, AND([variety].[reserve_1]="Microgreen", IN([status], LIST("17B8E678")), NOT(ISBLANK([rack]))))'
           },
           Rows: []
         })
