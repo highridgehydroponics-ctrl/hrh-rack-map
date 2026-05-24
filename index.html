@@ -451,7 +451,7 @@ function fmtDate(d) {
 function buildMap(batches, farm) {
   const map = {};
   for (const b of batches) {
-    const assigns = parseAssigns(b.rack || b._rack_assignment || '', farm);
+    const assigns = parseAssigns(b._rack_assignment || b.rack || '', farm);
     for (const a of assigns) {
       const key = `${a.rack}-${a.level}`;
       if (!map[key]) {
@@ -530,7 +530,7 @@ function switchFarm(farm) {
   document.getElementById(`tab-${farm}`).classList.add('active');
 
   const pattern = new RegExp(`^${farm}-\\d+[A-G]\\(`);
-  const farmBatches = allBatchCache.filter(b => pattern.test(b.rack || b._rack_assignment || ''));
+  const farmBatches = allBatchCache.filter(b => pattern.test(b._rack_assignment || b.rack || ''));
   farmMap = buildMap(farmBatches, farm);
   renderStats(farmMap);
   renderGrid('left-grid',  RACKS_LEFT,  farmMap);
