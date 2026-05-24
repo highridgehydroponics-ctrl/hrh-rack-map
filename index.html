@@ -502,7 +502,7 @@ function esc(s) {
 }
 
 /* ── Stats ── */
-function renderStats(map) {
+function renderStats(map, activeBatchCount) {
   let open=0, part=0, full=0;
   for (const r of [...RACKS_LEFT,...RACKS_RIGHT]) {
     for (const lv of LEVELS) {
@@ -512,12 +512,11 @@ function renderStats(map) {
       else part++;
     }
   }
-  const tot = open+part+full;
   document.getElementById('stats-bar').innerHTML = `
     <div class="stat"><div class="sdot d-open"></div><strong>${open}</strong>&nbsp;Open</div>
     <div class="stat"><div class="sdot d-partial"></div><strong>${part}</strong>&nbsp;Partial</div>
     <div class="stat"><div class="sdot d-full"></div><strong>${full}</strong>&nbsp;Full</div>
-    <div class="stat">📦 ${allBatchCache.filter(b=>/^${currentFarm}-\d+[A-G]\(/.test(b.rack||'')).length} Active Batches</div>
+    <div class="stat">📦 ${activeBatchCount} Active Batches</div>
   `;
 }
 
@@ -528,9 +527,15 @@ function switchFarm(farm) {
   document.getElementById(`tab-${farm}`).classList.add('active');
 
   const pattern = new RegExp(`^${farm}-\\d+[A-G]\\(`);
-  const farmBatches = allBatchCache.filter(b => pattern.test(b.rack || b._rack_assignment || ''));
+  const farmBatches = allBatchCache.filter(b => {
+    const rack   = b.rack || b._rack_assignment || '';
+    const status = (b.status_name || '').toLowerCase();
+    return rack !== '***'
+        && pattern.test(rack)
+        && status.includes('growing under lights');
+  });
   farmMap = buildMap(farmBatches, farm);
-  renderStats(farmMap);
+  renderStats(farmMap, farmBatches.length);
   renderGrid('left-grid',  RACKS_LEFT,  farmMap);
   renderGrid('right-grid', RACKS_RIGHT, farmMap);
 
@@ -556,7 +561,7 @@ async function reload() {
         body: JSON.stringify({
           Action: 'Find',
           Properties: {
-            Selector: 'Filter(batch, AND([variety].[reserve_1]="Microgreen", IN([status], LIST("17B8E678","88EC564B","8FD7219A")), NOT(ISBLANK([_rack_assignment]))))'
+            Selector: 'Filter(batch, AND([variety].[reserve_1]="Microgreen", [status]="17B8E678", NOT(ISBLANK([_rack_assignment])), [_rack_assignment]<>"***"))'
           },
           Rows: []
         })
