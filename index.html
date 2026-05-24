@@ -205,7 +205,7 @@ h1 {
 
 /* ── Cells ── */
 .cell {
-  height: 26px;               /* short — shelf height */
+  height: 32px;               /* shelf height */
   border-radius: 4px;
   display: flex;
   flex-direction: row;
@@ -222,13 +222,13 @@ h1 {
 .cell:hover { filter: brightness(1.25); transform: scaleY(1.12); z-index: 5; }
 .cell:active { filter: brightness(0.9); }
 
-/* Open — neon lime green */
+/* Open — solid neon lime green fill */
 .cell.open {
-  background: #071c00;
+  background: #39ff14;
   border-color: #39ff14;
-  box-shadow: 0 0 7px rgba(57,255,20,0.4), inset 0 0 10px rgba(57,255,20,0.07);
+  box-shadow: 0 0 10px rgba(57,255,20,0.5);
 }
-.cell.open:hover { border-color: #7FFF00; box-shadow: 0 0 14px rgba(127,255,0,0.65); }
+.cell.open:hover { background: #7FFF00; border-color: #7FFF00; box-shadow: 0 0 16px rgba(127,255,0,0.75); }
 
 /* Partial — neon orange solid fill */
 .cell.partial {
@@ -263,9 +263,10 @@ h1 {
 .cell.full .cname {
   color: #fff;
   font-weight: 900;
-  font-size: 0.82em;
+  font-size: 1em;
   text-align: center;
   width: 100%;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 .cell.open { justify-content: center; }
 .cell.open .cname { color: #ffffff; font-weight: 900; font-style: normal; font-size: 0.72em; text-align: center; flex: unset; }
@@ -394,6 +395,26 @@ h1 {
 .task-date { color: var(--muted); font-size: 0.88em; margin-top: 1px; }
 .no-tasks  { color: var(--muted); font-size: 0.8em; font-style: italic; }
 
+/* ── Task table ── */
+.task-table { width: 100%; border-collapse: collapse; font-size: 0.78em; margin-top: 6px; }
+.task-table th {
+  text-align: left; padding: 6px 10px;
+  font-size: 0.68em; font-weight: 700; letter-spacing: 0.08em;
+  color: var(--muted); text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+.task-table td { padding: 7px 10px; border-bottom: 1px solid #161c20; vertical-align: middle; }
+.task-table tr:last-child td { border-bottom: none; }
+.task-table tr:hover td { background: #141a1e; }
+.tt-task { font-weight: 600; color: var(--text); max-width: 120px; }
+.tt-date { color: var(--muted); font-variant-numeric: tabular-nums; }
+.tt-time { color: var(--muted); font-size: 0.9em; font-variant-numeric: tabular-nums; }
+.tt-status { text-align: center; }
+.tt-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
+.tt-dot.done    { background: var(--lime); }
+.tt-dot.pending { background: var(--orange); }
+.tt-dot.future  { background: var(--muted); }
+
 .status-badge {
   display: inline-block;
   padding: 2px 10px; border-radius: 20px;
@@ -468,6 +489,40 @@ h1 {
 /* ── Config ── */
 const APP_ID  = '0ddb09d1-5e1c-434e-9e6e-ce46a54cd628';
 const API_KEY = 'V2-tSZCd-mCmE9-JdcyR-TIS5Q-grSxm-EKYUM-EkcIV-0CHoS';
+
+/* ── Task type lookup (fetched once at load) ── */
+const TASK_TYPE_MAP = {
+  '07C1AD22': 'Harvest',
+  '0f4d3411': 'In Blackout',
+  '3ccaddda': 'Germinating',
+  '42054239': 'Put Under Lights',
+  '5165CC18': 'Dome Off',
+  '5d34f4d6': 'Transplant Seedlings',
+  '79B2A449': 'Soak',
+  '833B7A58': 'Rinse',
+  '8D6C31E3': 'Dome On',
+  'a8fcedc9': 'Irrigate',
+  'AA68F2FD': 'Brush',
+  'E06D162C': 'Unstack and PUL',
+  'e2045e76': 'Unstack and Put in Blackout',
+  'e7cfbce7': 'Weight Seeds',
+  'FDF36F1D': 'Plant',
+};
+
+/* ── Resolve executor display name ── */
+function resolveExecutor(executedBy, modifiedBy) {
+  if (!executedBy) return '—';
+  // If it looks like a plain readable name (no pure hex pattern), show it cleaned up
+  if (!/^[0-9a-f]{8}$/i.test(executedBy)) {
+    return executedBy.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  }
+  // It's an ID — fall back to email username from modifiedBy
+  if (modifiedBy && modifiedBy.includes('@')) {
+    const username = modifiedBy.split('@')[0];
+    return username.replace(/[._-]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  }
+  return executedBy;
+}
 const MAX_TRAYS   = 8;
 const LEVELS      = ['A','B','C','D','E','F','G'];
 // Left wall: 1-4 L→R; Right wall: 8-5 L→R (so rack 5 is at far right, mirroring rack 4)
@@ -555,9 +610,7 @@ function renderGrid(id, racks, map) {
         </div>`;
       } else {
         const dimmed = (currentFilter && currentFilter !== 'open') || currentVariety ? ' dimmed' : '';
-        html += `<div class="cell open${dimmed}" title="Open — Rack ${r} Level ${lv}">
-          <span class="cname">open</span>
-        </div>`;
+        html += `<div class="cell open${dimmed}" title="Open — Rack ${r} Level ${lv}"></div>`;
       }
     }
   }
@@ -747,77 +800,96 @@ function openModal(batchId, cellKey) {
 }
 
 async function loadTasksForBatch(batch) {
+  const taskListEl = document.getElementById('m-tasks');
+  if (!taskListEl) return;
+
   try {
-    // Build task timeline from the key date fields we already have
-    const tasks = [];
+    // Parse "MM/DD/YYYY HH:MM:SS" → { date: "May 7", time: "4:48 PM" }
+    function parseDateTime(str) {
+      if (!str) return null;
+      const [datePart, timePart] = str.split(' ');
+      const p = (datePart || '').split('/');
+      if (p.length < 2) return null;
+      const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const dateStr = `${mo[+p[0]-1] || p[0]} ${+p[1]}`;
+      let timeStr = '';
+      if (timePart) {
+        const [h, m] = timePart.split(':');
+        const hr = +h, mn = m || '00';
+        const ampm = hr >= 12 ? 'PM' : 'AM';
+        timeStr = `${hr % 12 || 12}:${mn} ${ampm}`;
+      }
+      return { date: dateStr, time: timeStr };
+    }
 
-    const dateFields = [
-      { label: 'Planting',          opt: batch.optimal_planting_date,  act: batch.actual_planting_date },
-      { label: 'Unstack',           opt: batch.optimal_unstack_date,   act: batch.actual_unstack_date },
-      { label: 'Put Under Lights',  opt: batch.optimal_pul_date,       act: batch.actual_pul_date },
-      { label: 'Dome On',           opt: batch.optimal_dome_on,        act: batch['actual_dome on'] },
-      { label: 'Dome Off',          opt: batch.optimal_dome_off,       act: batch.actual_dome_off },
-      { label: 'Harvest',           opt: batch.optimal_harvest_date,   act: batch.actual_harvest_date },
-    ];
+    // Fetch growth_journey records for this batch
+    const resp = await fetch(
+      `https://api.appsheet.com/api/v2/apps/${APP_ID}/tables/growth_journey/Action`,
+      {
+        method: 'POST',
+        headers: { 'ApplicationAccessKey': API_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          Action: 'Find',
+          Properties: { Selector: `Filter(growth_journey, [batch]="${batch.id}")` },
+          Rows: []
+        })
+      }
+    );
+    const journeys = await resp.json();
 
-    const today = new Date();
-    today.setHours(0,0,0,0);
-
-    for (const tf of dateFields) {
-      if (!tf.opt && !tf.act) continue;
-      const dateStr = tf.act || tf.opt;
-      const parts   = (dateStr||'').split('/');
-      let taskDate  = null;
-      if (parts.length === 3) taskDate = new Date(+parts[2], +parts[0]-1, +parts[1]);
-
-      let status = 'future';
-      if (tf.act) status = 'done';
-      else if (taskDate && taskDate < today) status = 'pending';
-
-      tasks.push({
-        label: tf.label,
-        date:  fmtDate(dateStr),
-        status,
-        isActual: !!tf.act,
+    // Filter out NA/irrelevant tasks and sort by scheduled_date
+    const relevant = journeys
+      .filter(j => j.status !== 'NA' && j.growth_task_type)
+      .sort((a, b) => {
+        const da = a.scheduled_date || '', db = b.scheduled_date || '';
+        return da.localeCompare(db);
       });
+
+    if (!relevant.length) {
+      taskListEl.innerHTML = '<div class="no-tasks">No growth tasks found.</div>';
+      return;
     }
 
-    // Also check next_step and next_task fields (may be populated on active batches)
-    const extras = [];
-    if (batch._next_step)             extras.push({ label: 'Next Step',      val: batch._next_step });
-    if (batch._next_task_to_complete) extras.push({ label: 'Next Task',      val: batch._next_task_to_complete });
-    if (batch._latest_task_completed) extras.push({ label: 'Last Completed', val: batch._latest_task_completed });
+    const today = new Date(); today.setHours(0,0,0,0);
 
-    const taskListEl = document.getElementById('m-tasks');
-    if (!taskListEl) return;
+    const rows = relevant.map(j => {
+      const taskName   = TASK_TYPE_MAP[j.growth_task_type] || j.growth_task_type;
+      const executed   = parseDateTime(j.executed_date_time);
+      const scheduled  = parseDateTime(j.scheduled_date);
+      const executor   = resolveExecutor(j.executed_by, j.modified_by);
+      const isDone     = j.status === 'DONE' || j.status === 'SENT';
+      const schedDate  = j.scheduled_date ? new Date(j.scheduled_date.replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2')) : null;
+      const isPast     = schedDate && schedDate < today;
+      const dotClass   = isDone ? 'done' : isPast ? 'pending' : 'future';
+      return { taskName, executed, scheduled, executor, isDone, dotClass };
+    });
 
-    let html = '';
-    if (tasks.length > 0) {
-      html = tasks.map(t => `
-        <div class="task-item">
-          <div class="task-dot ${t.status}"></div>
-          <div>
-            <div class="task-name">${esc(t.label)}</div>
-            <div class="task-date">${t.isActual ? '✓ Completed' : 'Target'}: ${esc(t.date)}</div>
-          </div>
-        </div>`).join('');
-    } else {
-      html = '<div class="no-tasks">No task timeline available.</div>';
-    }
-
-    if (extras.length > 0) {
-      html += extras.map(e =>
-        `<div class="task-item" style="margin-top:4px">
-          <div class="task-dot pending"></div>
-          <div><div class="task-name">${esc(e.label)}</div>
-          <div class="task-date">${esc(e.val)}</div></div>
-        </div>`).join('');
-    }
-
-    taskListEl.innerHTML = html;
+    taskListEl.innerHTML = `
+      <table class="task-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Task</th>
+            <th>Scheduled</th>
+            <th>Completed</th>
+            <th>Time</th>
+            <th>By</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map(r => `
+            <tr>
+              <td class="tt-status"><span class="tt-dot ${r.dotClass}"></span></td>
+              <td class="tt-task">${esc(r.taskName)}</td>
+              <td class="tt-date">${r.scheduled ? esc(r.scheduled.date) : '<span style="color:var(--muted)">—</span>'}</td>
+              <td class="tt-date">${r.executed ? esc(r.executed.date) : '<span style="color:var(--muted)">—</span>'}</td>
+              <td class="tt-time">${r.executed && r.executed.time ? esc(r.executed.time) : '<span style="color:var(--muted)">—</span>'}</td>
+              <td class="tt-task">${r.isDone ? esc(r.executor) : '<span style="color:var(--muted)">—</span>'}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>`;
   } catch(e) {
-    const el = document.getElementById('m-tasks');
-    if (el) el.innerHTML = `<div class="no-tasks">Could not load tasks: ${esc(e.message)}</div>`;
+    if (taskListEl) taskListEl.innerHTML = `<div class="no-tasks">Could not load tasks: ${esc(e.message)}</div>`;
   }
 }
 
