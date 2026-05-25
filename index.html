@@ -6,470 +6,134 @@
 <title>HRH Facility Rack Map</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
-  --lime:    #7FFF00;
-  --orange:  #FF6200;
-  --red:     #FF2020;
-  --bg:      #0a0d0f;
+  --lime: #7FFF00;
+  --orange: #FF6200;
+  --red: #FF2020;
+  --bg: #0a0d0f;
   --surface: #111518;
-  --border:  #1e2428;
-  --text:    #dde3e8;
-  --muted:   #6b7785;
+  --border: #1e2428;
+  --text: #dde3e8;
+  --muted: #6b7785;
 }
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  padding: 16px 20px 32px;
-  min-height: 100vh;
-}
-
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 16px 20px 32px; min-height: 100vh; }
 /* ── Header ── */
-h1 {
-  text-align: center;
-  font-size: 1.1em;
-  color: var(--lime);
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  font-weight: 800;
-  margin-bottom: 3px;
-}
-.sub {
-  text-align: center;
-  font-size: 0.7em;
-  color: var(--muted);
-  margin-bottom: 16px;
-}
-
+h1 { text-align: center; font-size: 1.1em; color: var(--lime); letter-spacing: 3px; text-transform: uppercase; font-weight: 800; margin-bottom: 3px; }
+.sub { text-align: center; font-size: 0.7em; color: var(--muted); margin-bottom: 16px; }
 /* ── Top bar: farm switcher + refresh ── */
-.top-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-.farm-tabs {
-  display: flex;
-  gap: 10px;
-}
-.farm-tab {
-  background: var(--surface);
-  border: 2px solid var(--border);
-  border-radius: 10px;
-  padding: 10px 28px;
-  cursor: pointer;
-  text-align: center;
-  transition: border-color 0.18s, background 0.18s;
-  min-width: 110px;
-}
+.top-bar { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; }
+.farm-tabs { display: flex; gap: 10px; }
+.farm-tab { background: var(--surface); border: 2px solid var(--border); border-radius: 10px; padding: 10px 28px; cursor: pointer; text-align: center; transition: border-color 0.18s, background 0.18s; min-width: 110px; }
 .farm-tab:hover { border-color: #3a4a50; }
-.farm-tab.active {
-  border-color: var(--lime);
-  background: #0d1a00;
-}
-.farm-tab .tab-id {
-  font-size: 1.4em;
-  font-weight: 900;
-  color: var(--lime);
-  letter-spacing: 2px;
-  line-height: 1;
-}
+.farm-tab.active { border-color: var(--lime); background: #0d1a00; }
+.farm-tab .tab-id { font-size: 1.4em; font-weight: 900; color: var(--lime); letter-spacing: 2px; line-height: 1; }
 .farm-tab:not(.active) .tab-id { color: var(--muted); }
-.farm-tab .tab-name {
-  font-size: 0.72em;
-  color: var(--text);
-  margin-top: 2px;
-  font-weight: 600;
-}
+.farm-tab .tab-name { font-size: 0.72em; color: var(--text); margin-top: 2px; font-weight: 600; }
 .farm-tab:not(.active) .tab-name { color: var(--muted); }
-
 /* ── Refresh button (top bar) ── */
 .refresh-wrap { display: flex; flex-direction: column; align-items: center; gap: 3px; }
-.btn-refresh {
-  background: #0d2200;
-  color: var(--lime);
-  border: 2px solid var(--lime);
-  padding: 10px 26px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 1em;
-  font-weight: 800;
-  letter-spacing: 1px;
-  transition: all 0.18s;
-  box-shadow: 0 0 8px rgba(127,255,0,0.3);
-}
+.btn-refresh { background: #0d2200; color: var(--lime); border: 2px solid var(--lime); padding: 10px 26px; border-radius: 10px; cursor: pointer; font-size: 1em; font-weight: 800; letter-spacing: 1px; transition: all 0.18s; box-shadow: 0 0 8px rgba(127,255,0,0.3); }
 .btn-refresh:hover { background: #183300; box-shadow: 0 0 16px rgba(127,255,0,0.55); }
 .btn-refresh:disabled { opacity: 0.5; cursor: not-allowed; }
 .refresh-time { font-size: 0.65em; color: var(--muted); }
-
 /* ── Stats bar ── */
-.stats-bar {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-.stat {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 0.82em;
-  cursor: pointer;
-  transition: all 0.18s;
-  user-select: none;
-}
+.stats-bar { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.stat { display: flex; align-items: center; gap: 5px; background: var(--surface); border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; font-size: 0.82em; cursor: pointer; transition: all 0.18s; user-select: none; }
 .stat:hover { border-color: #3a4a50; background: #1a2228; }
 .stat.active-filter { border-color: var(--lime); background: #0d1a00; }
 .stat.inactive-filter { opacity: 0.3; }
 .stat strong { color: var(--text); }
 .sdot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
-.d-open    { background: var(--lime); }
+.d-open { background: var(--lime); }
 .d-partial { background: var(--orange); }
-.d-full    { background: var(--red); }
-
+.d-full { background: var(--red); }
 /* ── Dimmed cells (filter) ── */
 .cell.dimmed { opacity: 0.15; pointer-events: none; }
-
 /* ── Variety dropdown ── */
-.variety-select {
-  background: var(--surface);
-  color: var(--text);
-  border: 1px solid var(--border);
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 0.82em;
-  font-family: inherit;
-  cursor: pointer;
-  outline: none;
-  transition: border-color 0.18s, background 0.18s;
-  appearance: none;
-  -webkit-appearance: none;
-  padding-right: 28px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b7785'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-}
+.variety-select { background: var(--surface); color: var(--text); border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; font-size: 0.82em; font-family: inherit; cursor: pointer; outline: none; transition: border-color 0.18s, background 0.18s; appearance: none; -webkit-appearance: none; padding-right: 28px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b7785'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; }
 .variety-select:hover { border-color: #3a4a50; background-color: #1a2228; }
 .variety-select.active-filter { border-color: var(--lime); background-color: #0d1a00; color: var(--lime); }
-
 /* ── Main 75/25 layout ── */
-.main-layout {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  width: 100%;
-}
-.map-panel {
-  flex: 0 0 75%;
-  min-width: 0;
-}
-.harvest-panel {
-  flex: 0 0 calc(25% - 16px);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px 12px;
-  max-height: 85vh;
-  overflow-y: auto;
-  position: sticky;
-  top: 16px;
-}
-.harvest-panel-title {
-  font-size: 0.78em;
-  font-weight: 800;
-  color: var(--lime);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-bottom: 12px;
-}
+.main-layout { display: flex; gap: 16px; align-items: flex-start; width: 100%; }
+.map-panel { flex: 0 0 75%; min-width: 0; }
+.harvest-panel { flex: 0 0 calc(25% - 16px); background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 12px; max-height: 85vh; overflow-y: auto; position: sticky; top: 16px; }
+.harvest-panel-title { font-size: 0.78em; font-weight: 800; color: var(--lime); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px; }
 .harvest-date-group { margin-bottom: 14px; }
-.harvest-date-btn {
-  width: 100%;
-  text-align: left;
-  background: #1a2228;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 7px 10px;
-  color: var(--text);
-  font-size: 0.78em;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: all 0.15s;
-  margin-bottom: 4px;
-}
+.harvest-date-btn { width: 100%; text-align: left; background: #1a2228; border: 1px solid var(--border); border-radius: 6px; padding: 7px 10px; color: var(--text); font-size: 0.78em; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.15s; margin-bottom: 4px; }
 .harvest-date-btn:hover { border-color: var(--lime); background: #0d1a00; }
 .harvest-date-btn.active { border-color: var(--lime); background: #0d1a00; color: var(--lime); }
-.harvest-date-btn .hd-count {
-  background: #2a3540;
-  border-radius: 10px;
-  padding: 1px 7px;
-  font-size: 0.82em;
-  color: var(--muted);
-}
+.harvest-date-btn .hd-count { background: #2a3540; border-radius: 10px; padding: 1px 7px; font-size: 0.82em; color: var(--muted); }
 .harvest-date-btn.active .hd-count { background: #1a3300; color: var(--lime); }
-.harvest-batch-item {
-  padding: 5px 10px;
-  font-size: 0.72em;
-  color: var(--muted);
-  border-left: 2px solid var(--border);
-  margin-left: 6px;
-  margin-bottom: 3px;
-  line-height: 1.4;
-}
+.harvest-batch-item { padding: 5px 10px; font-size: 0.72em; color: var(--muted); border-left: 2px solid var(--border); margin-left: 6px; margin-bottom: 3px; line-height: 1.4; }
 .harvest-batch-item strong { color: var(--text); display: block; }
 .harvest-none { font-size: 0.75em; color: var(--muted); font-style: italic; padding: 8px 0; }
-
 /* ── Tray counter ── */
-#tray-counter {
-  max-width: 100%;
-  margin-bottom: 12px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+#tray-counter { max-width: 100%; margin-bottom: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; display: flex; align-items: center; gap: 12px; }
 .tc-label { font-size: 0.75em; color: var(--muted); font-weight: 600; white-space: nowrap; }
 .tc-bar-wrap { flex: 1; background: #1a2228; border-radius: 20px; height: 10px; overflow: hidden; }
 .tc-bar { height: 100%; border-radius: 20px; background: var(--lime); transition: width 0.4s; box-shadow: 0 0 8px rgba(127,255,0,0.5); }
 .tc-pct { font-size: 0.82em; font-weight: 900; color: var(--lime); white-space: nowrap; }
 .tc-count { font-size: 0.72em; color: var(--muted); white-space: nowrap; }
-
 /* ── Highlighted batch cells ── */
 .cell.harvest-highlight { box-shadow: 0 0 0 2px var(--lime), 0 0 12px rgba(127,255,0,0.5) !important; }
-
 /* ── Outer layout ── */
-.map-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 100%;
-}
+.map-wrap { display: flex; flex-direction: column; gap: 20px; width: 100%; }
 .side { width: 100%; }
-
 /* ── Grid: 1 label col + 4 rack cols ── */
-.grid {
-  display: grid;
-  grid-template-columns: 14px repeat(4, 1fr);
-  gap: 3px;
-}
-
+.grid { display: grid; grid-template-columns: 14px repeat(4, 1fr); gap: 3px; }
 /* Level label */
-.lvl {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.72em;
-  font-weight: 900;
-  color: #8a9aaa;
-  letter-spacing: 0.05em;
-}
-
+.lvl { display: flex; align-items: center; justify-content: center; font-size: 0.72em; font-weight: 900; color: #8a9aaa; letter-spacing: 0.05em; }
 /* Rack header */
-.rhdr {
-  text-align: center;
-  font-size: 0.78em;
-  font-weight: 900;
-  color: #c0cdd8;
-  padding: 5px 2px 4px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  letter-spacing: 0.06em;
-}
-
+.rhdr { text-align: center; font-size: 0.78em; font-weight: 900; color: #c0cdd8; padding: 5px 2px 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; letter-spacing: 0.06em; }
 /* ── Cells ── */
-.cell {
-  min-height: 50px;
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 5px 4px 4px;
-  cursor: pointer;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  transition: filter 0.1s, transform 0.1s;
-  overflow: hidden;
-  position: relative;
-  user-select: none;
-  gap: 4px;
-}
+.cell { min-height: 50px; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5px 4px 4px; cursor: pointer; border: 1px solid var(--border); background: var(--surface); transition: filter 0.1s, transform 0.1s; overflow: hidden; position: relative; user-select: none; gap: 4px; }
 .cell:hover { filter: brightness(1.3); transform: scaleY(1.06); z-index: 5; }
 .cell:active { filter: brightness(0.85); }
-
 /* Variety label */
-.cell-variety {
-  font-size: 0.6em;
-  font-weight: 800;
-  color: #fff;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 100%;
-  line-height: 1.1;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.7);
-}
-
+.cell-variety { font-size: 0.6em; font-weight: 800; color: #fff; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; line-height: 1.1; text-shadow: 0 1px 3px rgba(0,0,0,0.7); }
 /* Tray slot row */
-.tray-row {
-  display: flex;
-  gap: 2px;
-  width: 100%;
-}
-.tray-slot {
-  flex: 1;
-  height: 13px;
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-.tray-slot.ts-open {
-  background: #39ff14;
-  box-shadow: 0 0 4px rgba(57,255,20,0.5);
-}
-.tray-slot.ts-full {
-  box-shadow: 0 0 5px rgba(255,26,26,0.6);
-}
-
+.tray-row { display: flex; gap: 2px; width: 100%; }
+.tray-slot { flex: 1; height: 13px; border-radius: 2px; flex-shrink: 0; }
+.tray-slot.ts-open { background: #39ff14; box-shadow: 0 0 4px rgba(57,255,20,0.5); }
+.tray-slot.ts-full { box-shadow: 0 0 5px rgba(255,26,26,0.6); }
 /* ── Bottom controls ── */
-.controls {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 14px;
-}
-.btn {
-  background: var(--surface);
-  color: var(--muted);
-  border: 1px solid var(--border);
-  padding: 7px 18px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 0.78em;
-  transition: all 0.18s;
-}
+.controls { display: flex; justify-content: center; gap: 10px; margin-top: 14px; }
+.btn { background: var(--surface); color: var(--muted); border: 1px solid var(--border); padding: 7px 18px; border-radius: 20px; cursor: pointer; font-size: 0.78em; transition: all 0.18s; }
 .btn:hover { background: #1e2a30; color: var(--text); border-color: #3a4a50; }
-
 /* ── Legend ── */
-.legend {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  margin-top: 12px;
-  flex-wrap: wrap;
-}
+.legend { display: flex; justify-content: center; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
 .leg { display: flex; align-items: center; gap: 5px; font-size: 0.68em; color: var(--muted); }
 .lsw { width: 24px; height: 8px; border-radius: 2px; }
-
 /* ── Loading / error ── */
 .loading { text-align: center; padding: 50px; color: var(--lime); font-size: 0.9em; }
 .pulse { animation: pulse 1.2s ease-in-out infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
-.err-box {
-  text-align: center; padding: 20px; color: #f85149;
-  background: #140508; border: 1px solid #4a1010; border-radius: 10px;
-  max-width: 480px; margin: 24px auto; font-size: 0.82em; line-height: 1.7;
-}
-
+.err-box { text-align: center; padding: 20px; color: #f85149; background: #140508; border: 1px solid #4a1010; border-radius: 10px; max-width: 480px; margin: 24px auto; font-size: 0.82em; line-height: 1.7; }
 /* ── MODAL ── */
-.modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.75);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 1000;
-  padding: 20px;
-}
-.modal {
-  background: #0f1419;
-  border: 1px solid #2a3540;
-  border-radius: 14px;
-  padding: 24px 28px;
-  width: 100%; max-width: 520px;
-  max-height: 85vh;
-  overflow-y: auto;
-  position: relative;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.7);
-}
-.modal-close {
-  position: absolute; top: 14px; right: 16px;
-  background: none; border: none; color: var(--muted);
-  font-size: 1.2em; cursor: pointer; line-height: 1;
-  padding: 4px 6px; border-radius: 4px;
-  transition: color 0.15s, background 0.15s;
-}
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+.modal { background: #0f1419; border: 1px solid #2a3540; border-radius: 14px; padding: 24px 28px; width: 100%; max-width: 520px; max-height: 85vh; overflow-y: auto; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.7); }
+.modal-close { position: absolute; top: 14px; right: 16px; background: none; border: none; color: var(--muted); font-size: 1.2em; cursor: pointer; line-height: 1; padding: 4px 6px; border-radius: 4px; transition: color 0.15s, background 0.15s; }
 .modal-close:hover { color: var(--text); background: #1e2a30; }
-
-.modal-variety {
-  font-size: 1.1em; font-weight: 800;
-  color: var(--text); margin-bottom: 10px;
-  text-align: center; padding-right: 28px;
-  line-height: 1.3;
-}
+.modal-variety { font-size: 1.1em; font-weight: 800; color: var(--text); margin-bottom: 10px; text-align: center; padding-right: 28px; line-height: 1.3; }
 .modal-batch { display: none; }
-.modal-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 10px; margin-bottom: 18px;
-}
-.mfield {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 12px;
-}
+.modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+.mfield { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
 .mfield-label { font-size: 0.62em; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 3px; }
-.mfield-val   { font-size: 0.85em; font-weight: 700; color: var(--text); }
-
-.modal-section {
-  margin-top: 16px;
-  border-top: 1px solid var(--border);
-  padding-top: 14px;
-}
-.modal-section-title {
-  font-size: 0.72em; font-weight: 700;
-  color: var(--muted); text-transform: uppercase;
-  letter-spacing: 0.1em; margin-bottom: 10px;
-}
+.mfield-val { font-size: 0.85em; font-weight: 700; color: var(--text); }
+.modal-section { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 14px; }
+.modal-section-title { font-size: 0.72em; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
 .task-list { display: flex; flex-direction: column; gap: 6px; }
-.task-item {
-  display: flex; align-items: flex-start; gap: 8px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 6px; padding: 8px 12px; font-size: 0.8em;
-}
-.task-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  flex-shrink: 0; margin-top: 3px;
-}
-.task-dot.done    { background: var(--lime); }
+.task-item { display: flex; align-items: flex-start; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font-size: 0.8em; }
+.task-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+.task-dot.done { background: var(--lime); }
 .task-dot.pending { background: var(--orange); }
-.task-dot.future  { background: var(--muted); }
+.task-dot.future { background: var(--muted); }
 .task-name { color: var(--text); font-weight: 600; }
 .task-date { color: var(--muted); font-size: 0.88em; margin-top: 1px; }
-.no-tasks  { color: var(--muted); font-size: 0.8em; font-style: italic; }
-
+.no-tasks { color: var(--muted); font-size: 0.8em; font-style: italic; }
 /* ── Task table ── */
 .task-table { width: 100%; border-collapse: collapse; font-size: 0.78em; margin-top: 6px; }
-.task-table th {
-  text-align: left; padding: 6px 10px;
-  font-size: 0.68em; font-weight: 700; letter-spacing: 0.08em;
-  color: var(--muted); text-transform: uppercase;
-  border-bottom: 1px solid var(--border);
-}
+.task-table th { text-align: left; padding: 6px 10px; font-size: 0.68em; font-weight: 700; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; border-bottom: 1px solid var(--border); }
 .task-table td { padding: 7px 10px; border-bottom: 1px solid #161c20; vertical-align: middle; }
 .task-table tr:last-child td { border-bottom: none; }
 .task-table tr:hover td { background: #141a1e; }
@@ -478,24 +142,21 @@ h1 {
 .tt-time { color: var(--muted); font-size: 0.9em; font-variant-numeric: tabular-nums; }
 .tt-status { text-align: center; }
 .tt-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
-.tt-dot.done    { background: var(--lime); }
+.tt-dot.done { background: var(--lime); }
 .tt-dot.pending { background: var(--orange); }
-.tt-dot.future  { background: var(--muted); }
-
-.status-badge {
-  display: inline-block;
-  padding: 2px 10px; border-radius: 20px;
-  font-size: 0.72em; font-weight: 700; letter-spacing: 0.04em;
-}
+.tt-dot.future { background: var(--muted); }
+.status-badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.72em; font-weight: 700; letter-spacing: 0.04em; }
 .s-harvesting { background: #0d1f3a; color: #58a6ff; border: 1px solid #1a4a8a; }
-.s-growing    { background: #0d2200; color: var(--lime); border: 1px solid #2a5500; }
-.s-upcoming   { background: #2d1c00; color: var(--orange); border: 1px solid #7a4500; }
-.s-other      { background: var(--surface); color: var(--muted); border: 1px solid var(--border); }
+.s-growing { background: #0d2200; color: var(--lime); border: 1px solid #2a5500; }
+.s-upcoming { background: #2d1c00; color: var(--orange); border: 1px solid #7a4500; }
+.s-other { background: var(--surface); color: var(--muted); border: 1px solid var(--border); }
 </style>
 </head>
 <body>
 
-<h1>🌿 HRH Facility Rack Map</h1>
+<h1>&#127807; HRH Facility Rack Map</h1>
+<!-- FIX: sub-label element was missing; switchFarm() sets its textContent on every farm switch -->
+<div class="sub" id="sub-label">Micro 1</div>
 
 <!-- Top bar: farm switcher + refresh -->
 <div class="top-bar">
@@ -510,8 +171,8 @@ h1 {
     </div>
   </div>
   <div class="refresh-wrap">
-    <button class="btn-refresh" id="refresh-btn" onclick="reload()">↻ Refresh</button>
-    <div class="refresh-time" id="refresh-time">—</div>
+    <button class="btn-refresh" id="refresh-btn" onclick="reload()">&#8635; Refresh</button>
+    <div class="refresh-time" id="refresh-time">&#8212;</div>
   </div>
 </div>
 
@@ -519,7 +180,7 @@ h1 {
 <div class="stats-bar" id="stats-bar"></div>
 
 <!-- Loading -->
-<div id="loading-area" class="loading"><span class="pulse">⏳ Fetching live AppSheet data…</span></div>
+<div id="loading-area" class="loading"><span class="pulse">&#9203; Fetching live AppSheet data&#8230;</span></div>
 
 <!-- Tray counter -->
 <div id="tray-counter" style="display:none"></div>
@@ -540,7 +201,7 @@ h1 {
     </div>
     <!-- Right: harvest list -->
     <div class="harvest-panel">
-      <div class="harvest-panel-title">🗓 Upcoming Harvests</div>
+      <div class="harvest-panel-title">&#128197; Upcoming Harvests</div>
       <div id="harvest-list"></div>
     </div>
   </div>
@@ -551,14 +212,14 @@ h1 {
 <!-- Modal -->
 <div class="modal-overlay" id="modal-overlay" style="display:none" onclick="closeModal()">
   <div class="modal" onclick="event.stopPropagation()">
-    <button class="modal-close" onclick="closeModal()">✕</button>
+    <button class="modal-close" onclick="closeModal()">&#10005;</button>
     <div class="modal-variety" id="m-variety"></div>
     <div class="modal-batch" id="m-batch"></div>
     <div id="m-status-badge"></div>
     <div class="modal-grid" id="m-fields"></div>
     <div class="modal-section">
       <div class="modal-section-title">Growth Tasks</div>
-      <div class="task-list" id="m-tasks"><div class="no-tasks pulse">Loading tasks…</div></div>
+      <div class="task-list" id="m-tasks"><div class="no-tasks pulse">Loading tasks&#8230;</div></div>
     </div>
   </div>
 </div>
@@ -568,7 +229,7 @@ h1 {
 const APP_ID  = '0ddb09d1-5e1c-434e-9e6e-ce46a54cd628';
 const API_KEY = 'V2-tSZCd-mCmE9-JdcyR-TIS5Q-grSxm-EKYUM-EkcIV-0CHoS';
 
-/* ── Task type lookup (fetched once at load) ── */
+/* ── Task type lookup ── */
 const TASK_TYPE_MAP = {
   '07C1AD22': 'Harvest',
   '0f4d3411': 'In Blackout',
@@ -590,41 +251,35 @@ const TASK_TYPE_MAP = {
 /* ── Resolve executor display name ── */
 function resolveExecutor(executedBy, modifiedBy) {
   if (!executedBy) return '—';
-  // 1. Try direct staff ID lookup
   if (staffById[executedBy]) return staffById[executedBy];
-  // 2. Try modified_by email lookup in staff
   if (modifiedBy && staffByEmail[modifiedBy]) return staffByEmail[modifiedBy];
-  // 3. Plain readable name (not a hex ID)
   if (!/^[0-9a-f]{8}$/i.test(executedBy)) {
     return executedBy.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   }
-  // 4. Fall back to email username
   if (modifiedBy && modifiedBy.includes('@')) {
     const username = modifiedBy.split('@')[0];
     return username.replace(/[._-]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   }
   return executedBy;
 }
+
 const MAX_TRAYS   = 8;
 const LEVELS      = ['A','B','C','D','E','F','G'];
-// Left wall: 1-4 L→R; Right wall: 8-5 L→R (so rack 5 is at far right, mirroring rack 4)
 const RACKS_LEFT  = [1, 2, 3, 4];
 const RACKS_RIGHT = [8, 7, 6, 5];
 
-let currentFarm = 'M1';
-let allBatchCache = [];     // all fetched batch records
-let farmMap = {};           // current farm's occupancy map
-let currentFilter  = null;  // 'open' | 'partial' | 'full' | null
-let currentVariety = null;  // variety name string | null
-let currentHarvestDate = null; // 'MM/DD/YYYY' | null — harvest date highlight
-let staffById  = {};        // id → full_name
-let staffByEmail = {};      // email → full_name
-let farmBatchesCache = [];  // current farm's batches
+let currentFarm        = 'M1';
+let allBatchCache      = [];
+let farmMap            = {};
+let currentFilter      = null;
+let currentVariety     = null;
+let currentHarvestDate = null;
+let staffById          = {};
+let staffByEmail       = {};
+let farmBatchesCache   = [];
+const TOTAL_CAPACITY   = 448;
 
-const TOTAL_CAPACITY = 448;
-
-// Colors for multi-batch cells (first batch = red, second = orange, etc.)
-const BATCH_COLORS = ['#ff1a1a', '#ff8c00', '#f0c000', '#a020f0', '#00bfff'];
+const BATCH_COLORS = ['#ff1a1a','#ff8c00','#f0c000','#a020f0','#00bfff'];
 
 /* ── Parse "M1-3E(8)" tokens ── */
 function parseAssigns(rackStr, farm) {
@@ -663,7 +318,6 @@ function buildMap(batches, farm) {
     for (const a of assigns) {
       const key = `${a.rack}-${a.level}`;
       if (!map[key]) map[key] = { slots: [], totalTrays: 0 };
-      // Add or accumulate trays for this batch on this cell
       const existing = map[key].slots.find(s => s.batchId === b.id);
       if (existing) {
         existing.trays += a.trays;
@@ -679,41 +333,31 @@ function buildMap(batches, farm) {
 /* ── Render one grid side ── */
 function renderGrid(id, racks, map) {
   const el = document.getElementById(id);
-  let html = '<div></div>';  // corner
+  let html = '<div></div>';
   for (const r of racks) html += `<div class="rhdr">Rack ${r}</div>`;
-
   for (const lv of LEVELS) {
     html += `<div class="lvl">${lv}</div>`;
     for (const r of racks) {
-      const key = `${r}-${lv}`;
+      const key  = `${r}-${lv}`;
       const info = map[key];
-
       if (info && info.totalTrays > 0) {
-        const fill = info.totalTrays >= MAX_TRAYS ? 'full' : 'partial';
-        const typeMismatch    = currentFilter  && currentFilter !== fill;
-        const varietyMismatch = currentVariety && !info.slots.some(s => s.variety === currentVariety);
+        const fill            = info.totalTrays >= MAX_TRAYS ? 'full' : 'partial';
+        const typeMismatch    = currentFilter      && currentFilter      !== fill;
+        const varietyMismatch = currentVariety     && !info.slots.some(s => s.variety === currentVariety);
         const harvestMismatch = currentHarvestDate && !info.slots.some(s => s.batch && s.batch.optimal_harvest_date === currentHarvestDate);
-        const dimmed = (typeMismatch || varietyMismatch || harvestMismatch) ? ' dimmed' : '';
-        const highlighted = currentHarvestDate && !harvestMismatch ? ' harvest-highlight' : '';
-        const labelText = info.slots.length > 1 ? 'Multi-Batch' : info.slots[0].variety;
-        const batchId = info.slots[0].batchId;
-        const harvestDateStr = info.slots[0].batch ? fmtDate(info.slots[0].batch.optimal_harvest_date) : '—';
-
-        // Build tray slots
-        let slotsHtml = '';
-        let slotsFilled = 0;
+        const dimmed          = (typeMismatch || varietyMismatch || harvestMismatch) ? ' dimmed' : '';
+        const highlighted     = currentHarvestDate && !harvestMismatch ? ' harvest-highlight' : '';
+        const labelText       = info.slots.length > 1 ? 'Multi-Batch' : info.slots[0].variety;
+        const batchId         = info.slots[0].batchId;
+        const harvestDateStr  = info.slots[0].batch ? fmtDate(info.slots[0].batch.optimal_harvest_date) : '—';
+        let slotsHtml = '', slotsFilled = 0;
         for (let si = 0; si < info.slots.length && slotsFilled < MAX_TRAYS; si++) {
           const color = BATCH_COLORS[si % BATCH_COLORS.length];
           const count = Math.min(info.slots[si].trays, MAX_TRAYS - slotsFilled);
-          for (let t = 0; t < count; t++) {
-            slotsHtml += `<div class="tray-slot ts-full" style="background:${color}"></div>`;
-          }
+          for (let t = 0; t < count; t++) slotsHtml += `<div class="tray-slot ts-full" style="background:${color}"></div>`;
           slotsFilled += count;
         }
-        for (let i = slotsFilled; i < MAX_TRAYS; i++) {
-          slotsHtml += `<div class="tray-slot ts-open"></div>`;
-        }
-
+        for (let i = slotsFilled; i < MAX_TRAYS; i++) slotsHtml += `<div class="tray-slot ts-open"></div>`;
         html += `<div class="cell${dimmed}${highlighted}" onclick="openModal('${esc(batchId)}','${esc(key)}')" title="Harvest: ${esc(harvestDateStr)}">
           <div class="cell-variety">${esc(labelText)}</div>
           <div class="tray-row">${slotsHtml}</div>
@@ -755,8 +399,8 @@ function setHarvestDate(dateStr) {
 function renderTrayCounter(batches) {
   const el = document.getElementById('tray-counter');
   if (!el) return;
-  const total = batches.reduce((sum, b) => sum + (parseFloat(b.number_of_trays) || 0), 0);
-  const pct = Math.min(100, Math.round((total / TOTAL_CAPACITY) * 100));
+  const total    = batches.reduce((sum, b) => sum + (parseFloat(b.number_of_trays) || 0), 0);
+  const pct      = Math.min(100, Math.round((total / TOTAL_CAPACITY) * 100));
   const barColor = pct >= 90 ? '#ff1a1a' : pct >= 70 ? '#ff8c00' : 'var(--lime)';
   el.style.display = 'flex';
   el.innerHTML = `
@@ -770,11 +414,8 @@ function renderTrayCounter(batches) {
 function renderHarvestList(batches) {
   const el = document.getElementById('harvest-list');
   if (!el) return;
-
   const today = new Date(); today.setHours(0,0,0,0);
   const cutoff = new Date(today); cutoff.setDate(cutoff.getDate() + 7);
-
-  // Group batches by harvest date within next 7 days
   const groups = {};
   for (const b of batches) {
     const d = b.optimal_harvest_date;
@@ -786,26 +427,23 @@ function renderHarvestList(batches) {
     if (!groups[d]) groups[d] = [];
     groups[d].push(b);
   }
-
   const sortedDates = Object.keys(groups).sort((a,b) => {
     const pa = a.split('/'), pb = b.split('/');
     return new Date(+pa[2],+pa[0]-1,+pa[1]) - new Date(+pb[2],+pb[0]-1,+pb[1]);
   });
-
   if (!sortedDates.length) {
     el.innerHTML = '<div class="harvest-none">No harvests in the next 7 days.</div>';
     return;
   }
-
   const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   el.innerHTML = sortedDates.map(dateStr => {
-    const p = dateStr.split('/');
-    const dt = new Date(+p[2], +p[0]-1, +p[1]);
-    const diffDays = Math.round((dt - today) / 86400000);
-    const dayLabel = diffDays === 0 ? 'Today' : diffDays === 1 ? 'Tomorrow' : dayNames[dt.getDay()];
-    const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const p         = dateStr.split('/');
+    const dt        = new Date(+p[2], +p[0]-1, +p[1]);
+    const diffDays  = Math.round((dt - today) / 86400000);
+    const dayLabel  = diffDays === 0 ? 'Today' : diffDays === 1 ? 'Tomorrow' : dayNames[dt.getDay()];
+    const mo        = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const dateLabel = `${dayLabel} · ${mo[+p[0]-1]} ${+p[1]}`;
-    const isActive = currentHarvestDate === dateStr;
+    const isActive  = currentHarvestDate === dateStr;
     const batchList = groups[dateStr].map(b =>
       `<div class="harvest-batch-item"><strong>${esc(extractVariety(b.name))}</strong>${esc(b._rack_assignment || '—')}</div>`
     ).join('');
@@ -834,16 +472,14 @@ function renderStats(map) {
   for (const r of [...RACKS_LEFT,...RACKS_RIGHT]) {
     for (const lv of LEVELS) {
       const info = map[`${r}-${lv}`];
-      if (!info||info.totalTrays===0) open++;
-      else if (info.totalTrays>=MAX_TRAYS) full++;
-      else part++;
+      if (!info || info.totalTrays === 0) open++;
+      else if (info.totalTrays >= MAX_TRAYS)  full++;
+      else                                    part++;
     }
   }
   const fOpen    = currentFilter === 'open'    ? 'active-filter' : currentFilter ? 'inactive-filter' : '';
   const fPartial = currentFilter === 'partial' ? 'active-filter' : currentFilter ? 'inactive-filter' : '';
   const fFull    = currentFilter === 'full'    ? 'active-filter' : currentFilter ? 'inactive-filter' : '';
-
-  // Build sorted unique variety list from occupied cells
   const varieties = [...new Set(
     Object.values(map)
       .filter(info => info.totalTrays > 0)
@@ -853,11 +489,10 @@ function renderStats(map) {
     `<option value="${esc(v)}"${currentVariety === v ? ' selected' : ''}>${esc(v)}</option>`
   ).join('');
   const varCls = currentVariety ? 'variety-select active-filter' : 'variety-select';
-
   document.getElementById('stats-bar').innerHTML = `
-    <div class="stat ${fOpen}"    onclick="setFilter('open')"><div class="sdot d-open"></div><strong>${open}</strong>&nbsp;Open</div>
+    <div class="stat ${fOpen}"    onclick="setFilter('open')"   ><div class="sdot d-open"   ></div><strong>${open}</strong>&nbsp;Open</div>
     <div class="stat ${fPartial}" onclick="setFilter('partial')"><div class="sdot d-partial"></div><strong>${part}</strong>&nbsp;Partial</div>
-    <div class="stat ${fFull}"    onclick="setFilter('full')"><div class="sdot d-full"></div><strong>${full}</strong>&nbsp;Full</div>
+    <div class="stat ${fFull}"    onclick="setFilter('full')"   ><div class="sdot d-full"   ></div><strong>${full}</strong>&nbsp;Full</div>
     <select id="variety-select" class="${varCls}" onchange="setVariety(this.value)">
       <option value="">All Varieties</option>
       ${varOptions}
@@ -867,24 +502,23 @@ function renderStats(map) {
 
 /* ── Switch farm ── */
 function switchFarm(farm) {
-  currentFarm = farm;
-  currentVariety = null;
-  currentFilter  = null;
+  currentFarm        = farm;
+  currentVariety     = null;
+  currentFilter      = null;
   currentHarvestDate = null;
   document.querySelectorAll('.farm-tab').forEach(t => t.classList.remove('active'));
   document.getElementById(`tab-${farm}`).classList.add('active');
-
-  const pattern = new RegExp(`^${farm}-\\d+[A-G]\\(`);
+  const pattern    = new RegExp(`^${farm}-\\d+[A-G]\\(`);
   farmBatchesCache = allBatchCache.filter(b => pattern.test(b._rack_assignment || b.rack || ''));
-  farmMap = buildMap(farmBatchesCache, farm);
+  farmMap          = buildMap(farmBatchesCache, farm);
   renderStats(farmMap);
   renderTrayCounter(farmBatchesCache);
   renderHarvestList(farmBatchesCache);
   renderGrid('left-grid',  RACKS_LEFT,  farmMap);
   renderGrid('right-grid', RACKS_RIGHT, farmMap);
-
-  document.getElementById('sub-label').textContent =
-    farm === 'M1' ? 'Micro 1' : 'Micro 2';
+  /* sub-label shows "Micro 1" / "Micro 2" under the page title */
+  const subLabelEl = document.getElementById('sub-label');
+  if (subLabelEl) subLabelEl.textContent = farm === 'M1' ? 'Micro 1' : 'Micro 2';
 }
 
 /* ── Load data ── */
@@ -892,18 +526,18 @@ async function reload() {
   const btn = document.getElementById('refresh-btn');
   if (btn) { btn.textContent = '⏳ Loading…'; btn.disabled = true; }
   document.getElementById('loading-area').style.display = 'block';
-  document.getElementById('content').style.display = 'none';
-  document.getElementById('err-area').innerHTML = '';
-
+  document.getElementById('content').style.display     = 'none';
+  document.getElementById('err-area').innerHTML        = '';
   try {
-    // Fetch batches and staff in parallel
     const [batchResp, staffResp] = await Promise.all([
       fetch(`https://api.appsheet.com/api/v2/apps/${APP_ID}/tables/batch/Action`, {
         method: 'POST',
         headers: { 'ApplicationAccessKey': API_KEY, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           Action: 'Find',
-          Properties: { Selector: 'Filter(batch, AND([variety].[reserve_1]="Microgreen", IN([status], LIST("17B8E678")), NOT(ISBLANK([_rack_assignment]))))' },
+          Properties: {
+            Selector: 'Filter(batch, AND([variety].[reserve_1]="Microgreen", IN([status], LIST("17B8E678")), NOT(ISBLANK([_rack_assignment]))))'
+          },
           Rows: []
         })
       }),
@@ -918,22 +552,21 @@ async function reload() {
     const txt = await batchResp.text();
     allBatchCache = txt.trim() ? JSON.parse(txt) : [];
 
-    // Build staff lookup maps
     try {
-      const staffTxt = await staffResp.text();
+      const staffTxt  = await staffResp.text();
       const staffData = staffTxt.trim() ? JSON.parse(staffTxt) : [];
       staffById = {}; staffByEmail = {};
       for (const s of staffData) {
-        if (s.id && s.full_name)  staffById[s.id]      = s.full_name;
+        if (s.id    && s.full_name) staffById[s.id]       = s.full_name;
         if (s.email && s.full_name) staffByEmail[s.email] = s.full_name;
       }
     } catch(e) { /* staff lookup optional */ }
 
     document.getElementById('loading-area').style.display = 'none';
-    document.getElementById('content').style.display = 'block';
+    document.getElementById('content').style.display     = 'block';
     const now = new Date();
     document.getElementById('refresh-time').textContent =
-      'Updated ' + now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      'Updated ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
     switchFarm(currentFarm);
 
   } catch(err) {
@@ -955,40 +588,35 @@ async function reload() {
 function openModal(batchId, cellKey) {
   const batch = allBatchCache.find(b => b.id === batchId);
   if (!batch) return;
-
   document.getElementById('m-variety').textContent = batch.name || batchId;
   document.getElementById('m-batch').textContent   = '';
 
-  // Status badge
   const sn = batch.status_name || '';
   let sCls = 's-other';
-  if (sn.toLowerCase().includes('harvest')) sCls = 's-harvesting';
-  else if (sn.toLowerCase().includes('growing')||sn.toLowerCase().includes('lights')) sCls = 's-growing';
-  else if (sn.toLowerCase().includes('upcoming')||sn.toLowerCase().includes('germinating')) sCls = 's-upcoming';
+  if      (sn.toLowerCase().includes('harvest'))                                          sCls = 's-harvesting';
+  else if (sn.toLowerCase().includes('growing') || sn.toLowerCase().includes('lights'))  sCls = 's-growing';
+  else if (sn.toLowerCase().includes('upcoming') || sn.toLowerCase().includes('germinating')) sCls = 's-upcoming';
   document.getElementById('m-status-badge').innerHTML =
-    `<span class="status-badge ${sCls}">${sn||'Unknown'}</span>`;
+    `<span class="status-badge ${sCls}">${sn || 'Unknown'}</span>`;
 
-  // Days remaining until harvest
   function daysLeft(dateStr) {
     if (!dateStr) return '—';
     const p = dateStr.split('/');
     if (p.length < 3) return '—';
     const harvest = new Date(+p[2], +p[0]-1, +p[1]);
-    const today = new Date(); today.setHours(0,0,0,0);
-    const diff = Math.round((harvest - today) / 86400000);
-    if (diff < 0)  return `${Math.abs(diff)}d overdue`;
+    const today   = new Date(); today.setHours(0,0,0,0);
+    const diff    = Math.round((harvest - today) / 86400000);
+    if (diff < 0)   return `${Math.abs(diff)}d overdue`;
     if (diff === 0) return 'Today!';
     return `${diff} days`;
   }
 
-  // Expected yield = avg yield per tray × number of trays
-  const avgYield  = parseFloat(batch.expected_avg_yield_per_tray);
-  const numTrays  = parseFloat(batch.number_of_trays);
-  const yieldVal  = (!isNaN(avgYield) && !isNaN(numTrays))
+  const avgYield = parseFloat(batch.expected_avg_yield_per_tray);
+  const numTrays = parseFloat(batch.number_of_trays);
+  const yieldVal = (!isNaN(avgYield) && !isNaN(numTrays))
     ? `${(avgYield * numTrays).toFixed(1)} oz`
     : (batch.expected_yield || batch.yield_oz || batch.total_oz || '—');
 
-  // Key fields
   const fields = [
     ['Rack',           batch._rack_assignment || batch.rack || '—'],
     ['Harvest Date',   fmtDate(batch.optimal_harvest_date)],
@@ -998,14 +626,13 @@ function openModal(batchId, cellKey) {
   document.getElementById('m-fields').innerHTML = fields.map(([l,v]) => {
     let valColor = '';
     if (l === 'Days Remaining') {
-      if (String(v).includes('overdue') || v === 'Today!')   valColor = 'style="color:var(--red)"';
-      else if (parseInt(v) <= 3)  valColor = 'style="color:var(--orange)"';
-      else                        valColor = 'style="color:var(--lime)"';
+      if (String(v).includes('overdue') || v === 'Today!') valColor = 'style="color:var(--red)"';
+      else if (parseInt(v) <= 3) valColor = 'style="color:var(--orange)"';
+      else valColor = 'style="color:var(--lime)"';
     }
     return `<div class="mfield"><div class="mfield-label">${l}</div><div class="mfield-val" ${valColor}>${esc(String(v))}</div></div>`;
   }).join('');
 
-  // Show modal immediately, then load tasks async
   document.getElementById('modal-overlay').style.display = 'flex';
   document.getElementById('m-tasks').innerHTML = '<div class="no-tasks pulse">Loading growth tasks…</div>';
   loadTasksForBatch(batch);
@@ -1014,17 +641,15 @@ function openModal(batchId, cellKey) {
 async function loadTasksForBatch(batch) {
   const taskListEl = document.getElementById('m-tasks');
   if (!taskListEl) return;
-
   try {
-    // Parse "MM/DD/YYYY HH:MM:SS" → { date: "May 7", time: "4:48 PM" }
     function parseDateTime(str) {
       if (!str) return null;
       const [datePart, timePart] = str.split(' ');
       const p = (datePart || '').split('/');
       if (p.length < 2) return null;
-      const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const mo      = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
       const dateStr = `${mo[+p[0]-1] || p[0]} ${+p[1]}`;
-      let timeStr = '';
+      let timeStr   = '';
       if (timePart) {
         const [h, m] = timePart.split(':');
         const hr = +h, mn = m || '00';
@@ -1034,7 +659,6 @@ async function loadTasksForBatch(batch) {
       return { date: dateStr, time: timeStr };
     }
 
-    // Fetch growth_journey records for this batch
     const resp = await fetch(
       `https://api.appsheet.com/api/v2/apps/${APP_ID}/tables/growth_journey/Action`,
       {
@@ -1049,13 +673,9 @@ async function loadTasksForBatch(batch) {
     );
     const journeys = await resp.json();
 
-    // Filter out NA/irrelevant tasks and sort by scheduled_date
     const relevant = journeys
       .filter(j => j.status !== 'NA' && j.growth_task_type)
-      .sort((a, b) => {
-        const da = a.scheduled_date || '', db = b.scheduled_date || '';
-        return da.localeCompare(db);
-      });
+      .sort((a, b) => (a.scheduled_date||'').localeCompare(b.scheduled_date||''));
 
     if (!relevant.length) {
       taskListEl.innerHTML = '<div class="no-tasks">No growth tasks found.</div>';
@@ -1063,16 +683,17 @@ async function loadTasksForBatch(batch) {
     }
 
     const today = new Date(); today.setHours(0,0,0,0);
-
-    const rows = relevant.map(j => {
-      const taskName   = TASK_TYPE_MAP[j.growth_task_type] || j.growth_task_type;
-      const executed   = parseDateTime(j.executed_date_time);
-      const scheduled  = parseDateTime(j.scheduled_date);
-      const executor   = resolveExecutor(j.executed_by, j.modified_by);
-      const isDone     = j.status === 'DONE' || j.status === 'SENT';
-      const schedDate  = j.scheduled_date ? new Date(j.scheduled_date.replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2')) : null;
-      const isPast     = schedDate && schedDate < today;
-      const dotClass   = isDone ? 'done' : isPast ? 'pending' : 'future';
+    const rows  = relevant.map(j => {
+      const taskName  = TASK_TYPE_MAP[j.growth_task_type] || j.growth_task_type;
+      const executed  = parseDateTime(j.executed_date_time);
+      const scheduled = parseDateTime(j.scheduled_date);
+      const executor  = resolveExecutor(j.executed_by, j.modified_by);
+      const isDone    = j.status === 'DONE' || j.status === 'SENT';
+      const schedDate = j.scheduled_date
+        ? new Date(j.scheduled_date.replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2'))
+        : null;
+      const isPast   = schedDate && schedDate < today;
+      const dotClass = isDone ? 'done' : isPast ? 'pending' : 'future';
       return { taskName, executed, scheduled, executor, isDone, dotClass };
     });
 
@@ -1080,12 +701,7 @@ async function loadTasksForBatch(batch) {
       <table class="task-table">
         <thead>
           <tr>
-            <th></th>
-            <th>Task</th>
-            <th>Scheduled</th>
-            <th>Completed</th>
-            <th>Time</th>
-            <th>By</th>
+            <th></th><th>Task</th><th>Scheduled</th><th>Completed</th><th>Time</th><th>By</th>
           </tr>
         </thead>
         <tbody>
@@ -1094,7 +710,7 @@ async function loadTasksForBatch(batch) {
               <td class="tt-status"><span class="tt-dot ${r.dotClass}"></span></td>
               <td class="tt-task">${esc(r.taskName)}</td>
               <td class="tt-date">${r.scheduled ? esc(r.scheduled.date) : '<span style="color:var(--muted)">—</span>'}</td>
-              <td class="tt-date">${r.executed ? esc(r.executed.date) : '<span style="color:var(--muted)">—</span>'}</td>
+              <td class="tt-date">${r.executed  ? esc(r.executed.date)  : '<span style="color:var(--muted)">—</span>'}</td>
               <td class="tt-time">${r.executed && r.executed.time ? esc(r.executed.time) : '<span style="color:var(--muted)">—</span>'}</td>
               <td class="tt-task">${r.isDone ? esc(r.executor) : '<span style="color:var(--muted)">—</span>'}</td>
             </tr>`).join('')}
@@ -1109,10 +725,8 @@ function closeModal() {
   document.getElementById('modal-overlay').style.display = 'none';
 }
 
-// Close on Escape
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-// Kick off
 reload();
 </script>
 </body>
